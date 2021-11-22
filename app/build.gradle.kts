@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("com.android.application")
@@ -39,7 +38,12 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = ("11")
+        jvmTarget = "11"
+
+        freeCompilerArgs =
+            freeCompilerArgs + "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi"
+        freeCompilerArgs =
+            freeCompilerArgs + "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi"
     }
 
     buildFeatures {
@@ -55,17 +59,6 @@ android {
                 "/META-INF/{AL2.0,LGPL2.1}",
             )
         }
-    }
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "15"
-
-        freeCompilerArgs =
-            freeCompilerArgs + "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi"
-        freeCompilerArgs =
-            freeCompilerArgs + "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi"
     }
 }
 
