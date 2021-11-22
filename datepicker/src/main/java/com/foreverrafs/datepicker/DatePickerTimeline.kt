@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,16 +37,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.foreverrafs.datepicker.state.DatePickerState
+import com.foreverrafs.datepicker.state.rememberDatePickerState
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.TextStyle
+import java.time.temporal.ChronoUnit.DAYS
 import java.util.Locale
 
 @ExperimentalComposeUiApi
 @Composable
 fun DatePickerTimeline(
     modifier: Modifier = Modifier,
-    initialSelectedDate: LocalDate = LocalDate.now(),
+    state: DatePickerState = rememberDatePickerState(LocalDate.now()),
     backgroundBrush: Brush,
     selectedBackgroundBrush: Brush,
     pastDaysCount: Int = 120,
@@ -55,77 +59,100 @@ fun DatePickerTimeline(
     todayTextColor: Color = MaterialTheme.colors.onSurface,
     onDateSelected: (LocalDate) -> Unit
 ) {
-    var selectedDate by remember { mutableStateOf(initialSelectedDate) }
+    // The first date shown on the calendar
+    val startDate by remember {
+        mutableStateOf(state.initialDate.minusDays(pastDaysCount.toLong()))
+    }
 
     var totalWindowWidth by remember { mutableStateOf(1) }
 
-    val startDate by remember { mutableStateOf(LocalDate.now().minusDays(pastDaysCount.toLong())) }
+    val selectedDateIndex = DAYS.between(startDate, state.initialDate).toInt()
 
-    val todayDatePosition by remember { mutableStateOf(pastDaysCount) }
     val coroutineScope = rememberCoroutineScope()
 
     // placeholder for how many items a row/column can occupy. Actual value gets calculated after placement
-    var span by remember { mutableStateOf(1) }
+    var span by remember { mutableStateOf(0) }
 
     val listState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
-        listState.scrollToItem(todayDatePosition - span / 2)
+        if (state.shouldScrollToSelectedDate) {
+            listState.scrollToItem(selectedDateIndex - span / 2)
+        }
     }
 
-    Column(
+    // scroll to the selected date when it changes
+    LaunchedEffect(state.initialDate) {
+        // Don't scroll if selected date is already visible on the screen
+        val isVisible = listState.layoutInfo.visibleItemsInfo.any {
+            it.index == selectedDateIndex
+        }
+
+        if (state.shouldScrollToSelectedDate && !isVisible) {
+            listState.animateScrollToItem(selectedDateIndex - span / 2)
+
+            // Reset the shouldScrollToSelectedDate flag
+            state.onScrollCompleted()
+        }
+    }
+
+    Surface(
+        elevation = 6.dp,
         modifier = modifier
-            .then(if (orientation == Orientation.Vertical) Modifier.fillMaxHeight() else Modifier.fillMaxWidth())
-            .clip(RoundedCornerShape(size = 4.dp))
-            .background(brush = backgroundBrush)
-            .padding(8.dp)
             .onPlaced {
                 totalWindowWidth =
                     if (orientation == Orientation.Horizontal) it.size.width else it.size.height
-            },
+            }
     ) {
-        TodayText(
-            text = "Today",
-            color = todayTextColor,
-            style = MaterialTheme.typography.h6
+        Column(
+            modifier = Modifier
+                .then(if (orientation == Orientation.Vertical) Modifier.fillMaxHeight() else Modifier.fillMaxWidth())
+                .clip(RoundedCornerShape(size = 4.dp))
+                .background(brush = backgroundBrush)
+                .padding(8.dp),
         ) {
-            coroutineScope.launch {
-                listState.animateScrollToItem(todayDatePosition - span / 2)
-                selectedDate = LocalDate.now()
+            TodayText(
+                text = "Today",
+                color = todayTextColor,
+                style = MaterialTheme.typography.h6
+            ) {
+                coroutineScope.launch {
+                    state.smoothScrollToDate(LocalDate.now())
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-        val content: LazyListScope.() -> Unit = {
-            items(Integer.MAX_VALUE) { value ->
-                val date = startDate.plusDays(value.toLong())
+            val content: LazyListScope.() -> Unit = {
+                items(Integer.MAX_VALUE) { position ->
+                    val date = startDate.plusDays(position.toLong())
 
-                DateCard(
-                    modifier = Modifier
-                        .onPlaced {
-                            span =
-                                totalWindowWidth / if (orientation == Orientation.Horizontal) {
-                                it.size.width
-                            } else {
-                                it.size.height
-                            }
+                    DateCard(
+                        modifier = Modifier
+                            .onPlaced {
+                                span =
+                                    totalWindowWidth / if (orientation == Orientation.Horizontal) {
+                                    it.size.width
+                                } else {
+                                    it.size.height
+                                }
+                            },
+                        date = date,
+                        isSelected = date == state.initialDate,
+                        onDateSelected = {
+                            onDateSelected(it)
+                            state.smoothScrollToDate(it)
                         },
-                    date = date,
-                    isSelected = date == selectedDate,
-                    onDateSelected = {
-                        selectedDate = it
-                        onDateSelected(it)
-                    },
-                    selectedBackgroundBrush = selectedBackgroundBrush,
-                    selectedTextColor = selectedTextColor,
-                    dateTextColor = dateTextColor,
-                )
+                        selectedBackgroundBrush = selectedBackgroundBrush,
+                        selectedTextColor = selectedTextColor,
+                        dateTextColor = dateTextColor,
+                    )
+                }
             }
-        }
 
-        DatePickerLayout(orientation = orientation, listState = listState) {
-            content()
+            DatePickerLayout(orientation = orientation, listState = listState) {
+                content()
+            }
         }
     }
 }
@@ -180,7 +207,7 @@ private fun ColumnScope.TodayText(
 @Composable
 fun DatePickerTimeline(
     modifier: Modifier = Modifier,
-    initialSelectedDate: LocalDate = LocalDate.now(),
+    state: DatePickerState = rememberDatePickerState(),
     backgroundColor: Color = MaterialTheme.colors.surface,
     selectedBackgroundColor: Color = MaterialTheme.colors.secondaryVariant,
     pastDaysCount: Int = 120,
@@ -192,7 +219,7 @@ fun DatePickerTimeline(
 ) {
     DatePickerTimeline(
         modifier = modifier,
-        initialSelectedDate = initialSelectedDate,
+        state = state,
         backgroundBrush = SolidColor(backgroundColor),
         selectedBackgroundBrush = SolidColor(selectedBackgroundColor),
         orientation = orientation,
