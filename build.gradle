@@ -26,7 +26,3 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-afterEvaluate {
-    tasks['clean'].dependsOn installGitHooks
-}
