@@ -51,7 +51,9 @@ android {
     }
     packagingOptions {
         resources {
-            excludes += ("/META-INF/{AL2.0,LGPL2.1}")
+            excludes += listOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+            )
         }
     }
 }
@@ -59,8 +61,11 @@ android {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         jvmTarget = "15"
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi"
-        freeCompilerArgs = freeCompilerArgs + "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi"
+
+        freeCompilerArgs =
+            freeCompilerArgs + "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi"
+        freeCompilerArgs =
+            freeCompilerArgs + "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi"
     }
 }
 
