@@ -44,6 +44,9 @@ android {
             freeCompilerArgs + "-Xopt-in=androidx.compose.foundation.ExperimentalFoundationApi"
         freeCompilerArgs =
             freeCompilerArgs + "-Xopt-in=androidx.compose.ui.ExperimentalComposeUiApi"
+
+        freeCompilerArgs =
+            freeCompilerArgs + "-Xopt-in=androidx.compose.ui.graphics.ExperimentalGraphicsApi"
     }
 
     buildFeatures {
@@ -63,10 +66,6 @@ android {
 }
 
 dependencies {
-    implementation("androidx.compose.ui:ui:1.0.5")
-
-    // Tooling support (Previews, etc.)
-    implementation("androidx.compose.ui:ui-tooling:1.0.5")
 
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
     implementation("androidx.compose.foundation:foundation:1.0.5")
@@ -86,6 +85,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.0")
+    implementation("com.godaddy.android.colorpicker:compose-color-picker-android:0.2.1")
     implementation("com.google.android.material:material:1.4.0")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
