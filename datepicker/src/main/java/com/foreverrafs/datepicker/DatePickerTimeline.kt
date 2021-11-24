@@ -75,19 +75,13 @@ fun DatePickerTimeline(
 
     val listState = rememberLazyListState()
 
-    LaunchedEffect(Unit) {
-        if (state.shouldScrollToSelectedDate) {
-            listState.scrollToItem(selectedDateIndex - span / 2)
-        }
+    // Don't scroll if selected date is already visible on the screen
+    val isVisible = listState.layoutInfo.visibleItemsInfo.any {
+        it.index == selectedDateIndex
     }
 
     // scroll to the selected date when it changes
     LaunchedEffect(state.initialDate) {
-        // Don't scroll if selected date is already visible on the screen
-        val isVisible = listState.layoutInfo.visibleItemsInfo.any {
-            it.index == selectedDateIndex
-        }
-
         if (state.shouldScrollToSelectedDate && !isVisible) {
             listState.animateScrollToItem(selectedDateIndex - span / 2)
 
@@ -118,6 +112,16 @@ fun DatePickerTimeline(
             ) {
                 coroutineScope.launch {
                     state.smoothScrollToDate(LocalDate.now())
+
+                    // state.smoothScrollToDate is backed by a MutableState which doesn't cause recomposition
+                    // when the user still has today's date selected because currentValue will be the same
+                    // as the applied value This can happen when the user selects today's date and flings the
+                    // calendar. Technically they still have today's date selected so clicking on the 'Today'
+                    // text does nothing. We perform this extra step to see if today's date is visible on the
+                    // screen. If yes, do nothing, else scroll to it
+                    if (!isVisible) {
+                        listState.animateScrollToItem(selectedDateIndex - span / 2)
+                    }
                 }
             }
 
