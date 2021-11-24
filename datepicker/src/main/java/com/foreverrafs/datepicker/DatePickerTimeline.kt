@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -41,6 +42,7 @@ import com.foreverrafs.datepicker.state.DatePickerState
 import com.foreverrafs.datepicker.state.rememberDatePickerState
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit.DAYS
 import java.util.Locale
@@ -170,6 +172,7 @@ private fun DatePickerLayout(
     when (orientation) {
         Orientation.Vertical -> {
             LazyColumn(
+                modifier = Modifier.testTag(tag = "datepickertimeline"),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 state = listState,
                 content = content
@@ -177,6 +180,7 @@ private fun DatePickerLayout(
         }
         Orientation.Horizontal -> {
             LazyRow(
+                modifier = Modifier.testTag(tag = "datepickertimeline"),
                 verticalAlignment = Alignment.CenterVertically,
                 state = listState,
                 content = content
@@ -235,6 +239,8 @@ fun DatePickerTimeline(
     )
 }
 
+private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
 @Composable
 private fun DateCard(
     modifier: Modifier = Modifier,
@@ -247,6 +253,7 @@ private fun DateCard(
 ) {
     Column(
         modifier = modifier
+            .testTag(tag = dateFormatter.format(date))
             .clip(shape = RoundedCornerShape(16.dp))
             .then(
                 if (isSelected) {

@@ -1,10 +1,6 @@
 package com.foreverrafs.datepickertimeline
 
-import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import java.time.LocalDate
 
 internal fun BaseTest.datePickerTimeLineRobot(
@@ -15,23 +11,17 @@ internal fun BaseTest.datePickerTimeLineRobot(
         func()
     }
 
-internal class DatePickerTimelineRobot(private val rule: ComposeTestRule) {
+internal class DatePickerTimelineRobot(rule: ComposeTestRule) : BaseRobot(rule) {
 
-    fun clickOnDate(date: LocalDate) {
-        rule.onNodeWithText(text = date.dayOfMonth.toString(), ignoreCase = true)
-            .assertExists()
-            .assertHasClickAction()
-            .performClick()
+    fun performClickOnDate(date: LocalDate) {
+        performClickOnNodeWithText(date.dayOfMonth.toString())
     }
 
-    fun verifyDateIsDisplayed(date: LocalDate) {
-        rule.onNodeWithText(text = date.dayOfMonth.toString(), ignoreCase = true)
-            .assertExists(errorMessageOnFail = "The date $date isn't displayed")
+    fun verifyDateIsDisplayed(date: String) {
+        verifyNodeWithTagIsDisplayed(testTag = date)
     }
 
-    fun clickButtonWithTag(tag: String) {
-        rule.onNodeWithTag(testTag = tag)
-            .assertExists()
-            .performClick()
+    fun verifyDateIsNotDisplayed(date: String) {
+        verifyNodeWithTagIsNotDisplayed(testTag = date)
     }
 }
