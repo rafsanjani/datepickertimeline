@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.foreverrafs.datepicker.DatePickerTimeline
+import com.foreverrafs.datepicker.state.DatePickerState
 import com.foreverrafs.datepicker.state.rememberDatePickerState
 import org.junit.Test
 import java.time.LocalDate
@@ -21,25 +22,23 @@ internal class DatePickerTimelineTests : BaseTest() {
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
     @Composable
-    fun May2020Content() {
-        val state = rememberDatePickerState(initialDate = LocalDate.of(2020, 5, 12))
-
+    fun TestDatePickerContent(
+        state: DatePickerState,
+        pastDaysCount: Int = 180,
+        onButtonClicked: () -> Unit = {}
+    ) {
         Column {
             DatePickerTimeline(
                 onDateSelected = {
                 },
-                state = state
+                state = state,
+                pastDaysCount = pastDaysCount
             )
 
             // With a button to manipulate the date
             Button(
                 modifier = Modifier.testTag("button"),
-                onClick = {
-                    // Move to 20th June, 2020
-                    state.smoothScrollToDate(
-                        LocalDate.of(2020, 6, 20)
-                    )
-                }
+                onClick = onButtonClicked
             ) {
                 Text(text = "Click")
             }
@@ -48,8 +47,20 @@ internal class DatePickerTimelineTests : BaseTest() {
 
     @Test
     fun verifyTimeLineAppearsCorrectly() {
+        var state: DatePickerState?
+        val initialDate = LocalDate.of(2020, 5, 12)
+
         setContent {
-            May2020Content()
+            state = rememberDatePickerState(initialDate)
+
+            state?.let { state ->
+                TestDatePickerContent(state = state, onButtonClicked = {
+                    // Move to 20th June, 2020
+                    state.smoothScrollToDate(
+                        LocalDate.of(2020, 6, 20)
+                    )
+                })
+            }
         }
 
         datePickerTimeLineRobot {
@@ -59,9 +70,17 @@ internal class DatePickerTimelineTests : BaseTest() {
     }
 
     @Test
-    fun verifyTodayTextComesBackToToday() {
+    fun verifyClickingOnTodayTextScrollsToToday() {
         setContent {
-            May2020Content()
+            TestDatePickerContent(
+                state = rememberDatePickerState(
+                    initialDate = LocalDate.of(
+                        2020,
+                        5,
+                        12
+                    )
+                )
+            )
         }
 
         datePickerTimeLineRobot {
@@ -79,6 +98,44 @@ internal class DatePickerTimelineTests : BaseTest() {
 
             // Verify that today's date comes into view
             verifyDateIsDisplayed(date = dateFormatter.format(LocalDate.now()))
+        }
+    }
+
+    @Test
+    fun verifyStateManipulationWorksAsExpected() {
+        var state: DatePickerState? = null
+
+        setContent {
+            state = rememberDatePickerState(initialDate = LocalDate.of(2021, 12, 12))
+
+            TestDatePickerContent(state = state!!, pastDaysCount = 180)
+        }
+        datePickerTimeLineRobot {
+            // Programmatically change state to another date
+            state?.smoothScrollToDate(LocalDate.of(2022, 5, 12))
+            verifyDateIsDisplayed(date = "12/05/2022")
+        }
+    }
+
+    @Test
+    fun verifyInvalidPastDateSelectsFirstDate() {
+        var state: DatePickerState? = null
+        val initialDate = LocalDate.of(2021, 12, 12)
+        val pastDaysCount = 10
+
+        setContent {
+            state = rememberDatePickerState(initialDate = initialDate)
+
+            TestDatePickerContent(state = state!!, pastDaysCount = pastDaysCount)
+        }
+
+        datePickerTimeLineRobot {
+            // Scroll to an invalid date
+            state?.smoothScrollToDate(LocalDate.of(2017, 1, 1))
+
+            val requiredDate = initialDate.minusDays(pastDaysCount.toLong())
+
+            verifyDateIsDisplayed(date = dateFormatter.format(requiredDate))
         }
     }
 }

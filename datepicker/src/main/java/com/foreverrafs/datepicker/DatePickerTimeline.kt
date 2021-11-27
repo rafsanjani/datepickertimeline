@@ -84,12 +84,15 @@ fun DatePickerTimeline(
 
     // scroll to the selected date when it changes
     LaunchedEffect(state.initialDate) {
-        if (state.shouldScrollToSelectedDate && !isVisible) {
+        if (selectedDateIndex <= 0) {
+            // Invalid start date, so just scroll to the first item
+            listState.animateScrollToItem(0)
+        } else if (state.shouldScrollToSelectedDate && !isVisible) {
             listState.animateScrollToItem(selectedDateIndex - span / 2)
-
-            // Reset the shouldScrollToSelectedDate flag
-            state.onScrollCompleted()
         }
+
+        // Reset the shouldScrollToSelectedDate flag
+        state.onScrollCompleted()
     }
 
     Surface(
@@ -117,10 +120,10 @@ fun DatePickerTimeline(
 
                     // state.smoothScrollToDate is backed by a MutableState which doesn't cause recomposition
                     // when the user still has today's date selected because currentValue will be the same
-                    // as the applied value This can happen when the user selects today's date and flings the
+                    // as the applied value. This can happen when the user selects today's date and flings the
                     // calendar. Technically they still have today's date selected so clicking on the 'Today'
-                    // text does nothing. We perform this extra step to see if today's date is visible on the
-                    // screen. If yes, do nothing, else scroll to it
+                    // text after the fling animation does nothing. We perform this extra step to see if today's
+                    // date is visible on the screen. If yes, do nothing, else scroll to it
                     if (!isVisible) {
                         listState.animateScrollToItem(selectedDateIndex - span / 2)
                     }
