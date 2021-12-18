@@ -2,13 +2,15 @@ package com.foreverrafs.datepicker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
@@ -35,7 +37,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.foreverrafs.datepicker.state.DatePickerState
@@ -45,7 +46,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit.DAYS
-import java.util.Locale
+import java.util.*
 
 @ExperimentalComposeUiApi
 @Composable
@@ -58,7 +59,7 @@ fun DatePickerTimeline(
     orientation: Orientation = Orientation.Horizontal,
     selectedTextColor: Color = MaterialTheme.colors.onSurface,
     dateTextColor: Color = MaterialTheme.colors.onSurface,
-    todayTextColor: Color = MaterialTheme.colors.onSurface,
+    todayLabel: @Composable BoxScope.() -> Unit = {},
     onDateSelected: (LocalDate) -> Unit
 ) {
     // The first date shown on the calendar
@@ -110,24 +111,29 @@ fun DatePickerTimeline(
                 .background(brush = backgroundBrush)
                 .padding(8.dp),
         ) {
-            TodayText(
-                text = "Today",
-                color = todayTextColor,
-                style = MaterialTheme.typography.h6
-            ) {
-                coroutineScope.launch {
-                    state.smoothScrollToDate(LocalDate.now())
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable {
+                        coroutineScope.launch {
+                            state.smoothScrollToDate(LocalDate.now())
 
-                    // state.smoothScrollToDate is backed by a MutableState which doesn't cause recomposition
-                    // when the user still has today's date selected because currentValue will be the same
-                    // as the applied value. This can happen when the user selects today's date and flings the
-                    // calendar. Technically they still have today's date selected so clicking on the 'Today'
-                    // text after the fling animation does nothing. We perform this extra step to see if today's
-                    // date is visible on the screen. If yes, do nothing, else scroll to it
-                    if (!isVisible) {
-                        listState.animateScrollToItem(selectedDateIndex - span / 2)
+                            // state.smoothScrollToDate is backed by a MutableState which doesn't cause recomposition
+                            // when the user still has today's date selected because currentValue will be the same
+                            // as the applied value. This can happen when the user selects today's date and flings the
+                            // calendar. Technically they still have today's date selected so clicking on the 'Today'
+                            // text after the fling animation does nothing. We perform this extra step to see if today's
+                            // date is visible on the screen. If yes, do nothing, else scroll to it
+                            if (!isVisible) {
+                                listState.animateScrollToItem(selectedDateIndex - span / 2)
+                            }
+                        }
                     }
-                }
+                    .wrapContentSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                todayLabel()
             }
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -141,10 +147,10 @@ fun DatePickerTimeline(
                             .onPlaced {
                                 span =
                                     totalWindowWidth / if (orientation == Orientation.Horizontal) {
-                                    it.size.width
-                                } else {
-                                    it.size.height
-                                }
+                                        it.size.width
+                                    } else {
+                                        it.size.height
+                                    }
                             },
                         date = date,
                         isSelected = date == state.initialDate,
@@ -192,27 +198,6 @@ private fun DatePickerLayout(
     }
 }
 
-@Composable
-private fun ColumnScope.TodayText(
-    text: String,
-    color: Color,
-    style: androidx.compose.ui.text.TextStyle,
-    onClick: () -> Unit
-) {
-    Text(
-        modifier = Modifier
-            .align(Alignment.CenterHorizontally)
-            .clip(RoundedCornerShape(12.dp))
-            .clickable {
-                onClick()
-            }
-            .padding(12.dp),
-        text = text,
-        textAlign = TextAlign.Center,
-        color = color,
-        style = style
-    )
-}
 
 @ExperimentalComposeUiApi
 @Composable
@@ -225,7 +210,7 @@ fun DatePickerTimeline(
     orientation: Orientation = Orientation.Horizontal,
     dateTextColor: Color = MaterialTheme.colors.onSurface,
     selectedTextColor: Color = MaterialTheme.colors.onSurface,
-    todayTextColor: Color = MaterialTheme.colors.onSurface,
+    todayLabel: @Composable BoxScope.() -> Unit = {},
     onDateSelected: (LocalDate) -> Unit
 ) {
     DatePickerTimeline(
@@ -238,7 +223,7 @@ fun DatePickerTimeline(
         onDateSelected = onDateSelected,
         selectedTextColor = selectedTextColor,
         dateTextColor = dateTextColor,
-        todayTextColor = todayTextColor,
+        todayLabel = todayLabel,
     )
 }
 

@@ -81,7 +81,6 @@ fun App() {
                     selectedBackgroundColor = selectedDateBackgroundColor,
                     selectedTextColor = Color.White,
                     dateTextColor = dateTextColor,
-                    todayTextColor = Color.White
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
