@@ -74,9 +74,9 @@ dependencies {
 afterEvaluate {
     publishing {
         publications {
-            create<MavenPublication>("maven") {
-                groupId = "com.foreverrafs"
-                artifactId = "datepickertimeline"
+            create<MavenPublication>("release") {
+                groupId = "com.github.Rafsanjani"
+                artifactId = "datepicker-timeline"
                 version = "0.0.1"
             }
         }
