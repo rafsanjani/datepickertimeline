@@ -46,7 +46,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit.DAYS
-import java.util.*
+import java.util.Locale
 
 @ExperimentalComposeUiApi
 @Composable
@@ -147,10 +147,10 @@ fun DatePickerTimeline(
                             .onPlaced {
                                 span =
                                     totalWindowWidth / if (orientation == Orientation.Horizontal) {
-                                        it.size.width
-                                    } else {
-                                        it.size.height
-                                    }
+                                    it.size.width
+                                } else {
+                                    it.size.height
+                                }
                             },
                         date = date,
                         isSelected = date == state.initialDate,

@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
 }
 
 val composeVersion = "1.1.0-beta03"
@@ -68,4 +69,16 @@ dependencies {
 
     testImplementation("org.assertj:assertj-core:3.21.0")
     androidTestImplementation("org.assertj:assertj-core:3.21.0")
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = "com.foreverrafs"
+                artifactId = "datepickertimeline"
+                version = "0.0.1"
+            }
+        }
+    }
 }
