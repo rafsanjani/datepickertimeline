@@ -76,7 +76,7 @@ dependencies {
     // Material design icons
     implementation("androidx.compose.material:material-icons-core:$composeVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
-    implementation(project(mapOf("path" to ":datepicker")))
+    implementation(project(mapOf("path" to ":datepickertimeline")))
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")

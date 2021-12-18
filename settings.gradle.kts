@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "datepicker"
 include(":app")
-include(":datepicker")
+include(":datepickertimeline")
