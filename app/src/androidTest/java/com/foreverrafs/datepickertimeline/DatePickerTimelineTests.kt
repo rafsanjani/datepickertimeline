@@ -32,7 +32,10 @@ internal class DatePickerTimelineTests : BaseTest() {
                 onDateSelected = {
                 },
                 state = state,
-                pastDaysCount = pastDaysCount
+                pastDaysCount = pastDaysCount,
+                todayLabel = {
+                    Text(text = "Today")
+                }
             )
 
             // With a button to manipulate the date
