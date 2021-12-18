@@ -68,18 +68,18 @@ android {
 dependencies {
 
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation("androidx.compose.foundation:foundation:1.0.5")
+    implementation("androidx.compose.foundation:foundation:$composeVersion")
 
     // Material Design
-    implementation("androidx.compose.material:material:1.0.5")
+    implementation("androidx.compose.material:material:$composeVersion")
 
     // Material design icons
-    implementation("androidx.compose.material:material-icons-core:1.0.5")
-    implementation("androidx.compose.material:material-icons-extended:1.0.5")
+    implementation("androidx.compose.material:material-icons-core:$composeVersion")
+    implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation(project(mapOf("path" to ":datepicker")))
 
     // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.5")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     testImplementation("org.assertj:assertj-core:3.21.0")
     androidTestImplementation("org.assertj:assertj-core:3.21.0")
 
