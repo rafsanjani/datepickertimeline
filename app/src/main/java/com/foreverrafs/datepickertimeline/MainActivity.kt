@@ -66,11 +66,13 @@ fun App() {
                     .fillMaxSize()
             ) {
                 val datePickerState =
-                    rememberDatePickerState(initialDate = LocalDate.now().minusDays(5))
+                    rememberDatePickerState(initialDate = LocalDate.now())
 
                 var mainBackgroundColor by remember { mutableStateOf(Purple500) }
                 var selectedDateBackgroundColor by remember { mutableStateOf(Color.Black.copy(alpha = 0.35f)) }
+                var eventIndicatorColor by remember { mutableStateOf(Color.Black.copy(alpha = 0.35f)) }
                 var dateTextColor by remember { mutableStateOf(Color.White) }
+                val today = LocalDate.now()
 
                 DatePickerTimeline(
                     modifier = Modifier.wrapContentSize(),
@@ -81,6 +83,22 @@ fun App() {
                     selectedBackgroundColor = selectedDateBackgroundColor,
                     selectedTextColor = Color.White,
                     dateTextColor = dateTextColor,
+                    eventDates = listOf(
+                        today.plusDays(1),
+                        today.plusDays(3),
+                        today.plusDays(5),
+                        today.plusDays(8),
+                    ),
+                    todayLabel = {
+                        Text(
+                            modifier = Modifier.padding(10.dp),
+                            text = "Today",
+                            color = Color.White,
+                            style = MaterialTheme.typography.h6
+                        )
+                    },
+                    pastDaysCount = 1,
+                    eventIndicatorColor = eventIndicatorColor
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -107,6 +125,12 @@ fun App() {
                         selected = selected == Radio.DateTextColor,
                         onClick = { selected = Radio.DateTextColor }
                     )
+
+                    RadioButtonWithText(
+                        text = "Event Indicator color",
+                        selected = selected == Radio.EventIndicatorColor,
+                        onClick = { selected = Radio.EventIndicatorColor }
+                    )
                 }
 
                 ClassicColorPicker(
@@ -121,6 +145,8 @@ fun App() {
                             Radio.DateTextColor ->
                                 dateTextColor =
                                     color.toColor()
+                            Radio.EventIndicatorColor ->
+                                eventIndicatorColor = color.toColor()
                         }
                     }
                 )
@@ -157,7 +183,8 @@ fun App() {
 enum class Radio {
     MainBackground,
     SelectedDateBackground,
-    DateTextColor
+    DateTextColor,
+    EventIndicatorColor
 }
 
 @Composable
