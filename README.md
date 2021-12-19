@@ -12,14 +12,15 @@ A linear Android date picker library written in Jetpack compose.<br> Inspired by
 
 
 ## Installation ![](https://jitpack.io/v/Rafsanjani/datepickertimeline.svg)
+Add the dependency to your `build.gradle` or `build.gradle.kts` file
 
 ```groovy
 repositories {
-  maven { url 'https://jitpack.io' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies{
-  implementation 'com.github.Rafsanjani:datepickertimeline:<latest_version>'
+    implementation ("com.github.Rafsanjani:datepickertimeline:<latest_version>")
 }
 ```
 ## Usage 
