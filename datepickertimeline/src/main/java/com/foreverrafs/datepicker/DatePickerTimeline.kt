@@ -2,6 +2,7 @@ package com.foreverrafs.datepicker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -10,13 +11,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -46,7 +50,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit.DAYS
-import java.util.Locale
+import java.util.*
 
 @ExperimentalComposeUiApi
 @Composable
@@ -55,6 +59,8 @@ fun DatePickerTimeline(
     state: DatePickerState = rememberDatePickerState(LocalDate.now()),
     backgroundBrush: Brush,
     selectedBackgroundBrush: Brush,
+    eventIndicatorColor: Color = MaterialTheme.colors.primaryVariant,
+    eventDates: List<LocalDate>,
     pastDaysCount: Int = 120,
     orientation: Orientation = Orientation.Horizontal,
     selectedTextColor: Color = MaterialTheme.colors.onSurface,
@@ -147,10 +153,10 @@ fun DatePickerTimeline(
                             .onPlaced {
                                 span =
                                     totalWindowWidth / if (orientation == Orientation.Horizontal) {
-                                    it.size.width
-                                } else {
-                                    it.size.height
-                                }
+                                        it.size.width
+                                    } else {
+                                        it.size.height
+                                    }
                             },
                         date = date,
                         isSelected = date == state.initialDate,
@@ -161,6 +167,8 @@ fun DatePickerTimeline(
                         selectedBackgroundBrush = selectedBackgroundBrush,
                         selectedTextColor = selectedTextColor,
                         dateTextColor = dateTextColor,
+                        isEventDate = eventDates.contains(date),
+                        eventIndicatorColor = eventIndicatorColor
                     )
                 }
             }
@@ -183,6 +191,7 @@ private fun DatePickerLayout(
             LazyColumn(
                 modifier = Modifier.testTag(tag = "datepickertimeline"),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(2.dp),
                 state = listState,
                 content = content
             )
@@ -191,6 +200,7 @@ private fun DatePickerLayout(
             LazyRow(
                 modifier = Modifier.testTag(tag = "datepickertimeline"),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
                 state = listState,
                 content = content
             )
@@ -205,6 +215,8 @@ fun DatePickerTimeline(
     state: DatePickerState = rememberDatePickerState(),
     backgroundColor: Color = MaterialTheme.colors.surface,
     selectedBackgroundColor: Color = MaterialTheme.colors.secondaryVariant,
+    eventIndicatorColor: Color = MaterialTheme.colors.primaryVariant,
+    eventDates: List<LocalDate> = listOf(),
     pastDaysCount: Int = 120,
     orientation: Orientation = Orientation.Horizontal,
     dateTextColor: Color = MaterialTheme.colors.onSurface,
@@ -217,6 +229,8 @@ fun DatePickerTimeline(
         state = state,
         backgroundBrush = SolidColor(backgroundColor),
         selectedBackgroundBrush = SolidColor(selectedBackgroundColor),
+        eventIndicatorColor = eventIndicatorColor,
+        eventDates = eventDates,
         orientation = orientation,
         pastDaysCount = pastDaysCount,
         onDateSelected = onDateSelected,
@@ -233,6 +247,8 @@ private fun DateCard(
     modifier: Modifier = Modifier,
     date: LocalDate,
     isSelected: Boolean,
+    isEventDate: Boolean,
+    eventIndicatorColor: Color,
     onDateSelected: (LocalDate) -> Unit,
     selectedBackgroundBrush: Brush,
     selectedTextColor: Color = MaterialTheme.colors.onSurface,
@@ -269,10 +285,24 @@ private fun DateCard(
             fontSize = 24.sp,
             color = textColor
         )
+
         Text(
             text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).uppercase(),
             color = textColor
         )
+
+        if (isEventDate) {
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Divider(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .width(14.dp),
+                thickness = 3.dp,
+                color = eventIndicatorColor
+            )
+        }
     }
 }
 
