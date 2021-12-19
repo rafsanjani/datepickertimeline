@@ -1,5 +1,6 @@
 
 
+
 # DatePickerTimeline ![Android CI](https://github.com/Rafsanjani/datepickertimeline/actions/workflows/android.yml/badge.svg?branch=main)
 
 
@@ -118,3 +119,6 @@ Column{
   }
 }
 ```
+
+### Credits
+ - https://github.com/godaddy/compose-color-picker for the beautiful color picker library used in the samples
