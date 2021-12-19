@@ -10,10 +10,9 @@ fun isLinuxOrMacOs(): Boolean {
 tasks.register(name = "copyGitHooks", type = Copy::class) {
     description = "Copies the git hooks from /git-hooks to the .git folder"
     from("${rootDir}/git-hooks/") {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
         include("**/*.sh")
-        rename {
-            "(.*).sh', '$1'"
-        }
+        rename("(.*).sh", "$1")
     }
     into("${rootDir}/.git/hooks")
     onlyIf {

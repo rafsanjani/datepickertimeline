@@ -153,10 +153,10 @@ fun DatePickerTimeline(
                             .onPlaced {
                                 span =
                                     totalWindowWidth / if (orientation == Orientation.Horizontal) {
-                                        it.size.width
-                                    } else {
-                                        it.size.height
-                                    }
+                                    it.size.width
+                                } else {
+                                    it.size.height
+                                }
                             },
                         date = date,
                         isSelected = date == state.initialDate,

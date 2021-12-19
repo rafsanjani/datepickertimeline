@@ -23,6 +23,12 @@ subprojects {
     apply from: "../scripts/detekt.gradle"
 }
 
+
+afterEvaluate {
+    // We install the hook at the first occasion
+    tasks['clean'].dependsOn installGitHooks
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

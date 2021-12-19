@@ -76,7 +76,7 @@ fun App() {
                 var dateTextColor by remember { mutableStateOf(Color.White) }
                 val today = LocalDate.now()
 
-            LocalDate.of(2022, 1, 1)
+                LocalDate.of(2022, 1, 1)
                 DatePickerTimeline(
                     modifier = Modifier.wrapContentSize(),
                     onDateSelected = {},
