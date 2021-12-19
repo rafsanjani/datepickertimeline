@@ -12,10 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
@@ -52,15 +52,17 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 fun App() {
     DatepickertimelineTheme {
+        DatePickerTimeline(onDateSelected = {}, orientation = Orientation.Vertical)
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            Column(
+            Row(
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxSize()
@@ -74,12 +76,13 @@ fun App() {
                 var dateTextColor by remember { mutableStateOf(Color.White) }
                 val today = LocalDate.now()
 
+            LocalDate.of(2022, 1, 1)
                 DatePickerTimeline(
                     modifier = Modifier.wrapContentSize(),
                     onDateSelected = {},
                     backgroundColor = mainBackgroundColor,
                     state = datePickerState,
-                    orientation = Orientation.Horizontal,
+                    orientation = Orientation.Vertical,
                     selectedBackgroundColor = selectedDateBackgroundColor,
                     selectedTextColor = Color.White,
                     dateTextColor = dateTextColor,
@@ -101,9 +104,7 @@ fun App() {
                     eventIndicatorColor = eventIndicatorColor
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Divider(modifier = Modifier.fillMaxWidth(), thickness = 2.dp)
+                Spacer(modifier = Modifier.width(8.dp))
 
                 var selected by remember { mutableStateOf(Radio.MainBackground) }
 
@@ -131,50 +132,50 @@ fun App() {
                         selected = selected == Radio.EventIndicatorColor,
                         onClick = { selected = Radio.EventIndicatorColor }
                     )
-                }
 
-                ClassicColorPicker(
-                    color = mainBackgroundColor,
-                    modifier = Modifier.height(250.dp),
-                    onColorChanged = { color: HsvColor ->
-                        when (selected) {
-                            Radio.MainBackground -> mainBackgroundColor = color.toColor()
-                            Radio.SelectedDateBackground ->
-                                selectedDateBackgroundColor =
-                                    color.toColor()
-                            Radio.DateTextColor ->
-                                dateTextColor =
-                                    color.toColor()
-                            Radio.EventIndicatorColor ->
-                                eventIndicatorColor = color.toColor()
+                    ClassicColorPicker(
+                        color = mainBackgroundColor,
+                        modifier = Modifier.height(250.dp),
+                        onColorChanged = { color: HsvColor ->
+                            when (selected) {
+                                Radio.MainBackground -> mainBackgroundColor = color.toColor()
+                                Radio.SelectedDateBackground ->
+                                    selectedDateBackgroundColor =
+                                        color.toColor()
+                                Radio.DateTextColor ->
+                                    dateTextColor =
+                                        color.toColor()
+                                Radio.EventIndicatorColor ->
+                                    eventIndicatorColor = color.toColor()
+                            }
                         }
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Button(
+                        modifier = Modifier
+                            .align(alignment = Alignment.CenterHorizontally)
+                            .padding(10.dp)
+                            .height(48.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        onClick = {
+                            datePickerState.smoothScrollToDate(
+                                LocalDate.now().plusDays(Random.nextLong(until = 50))
+                            )
+                        },
+                    ) {
+                        Text("Random Date")
                     }
-                )
 
-                Spacer(modifier = Modifier.weight(1f))
-
-                Button(
-                    modifier = Modifier
-                        .align(alignment = Alignment.CenterHorizontally)
-                        .padding(10.dp)
-                        .height(48.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    onClick = {
-                        datePickerState.smoothScrollToDate(
-                            LocalDate.now().plusDays(Random.nextLong(until = 50))
-                        )
-                    },
-                ) {
-                    Text("Random Date")
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        text = DateTimeFormatter.ofPattern("MMMM dd, yyyy")
+                            .format(datePickerState.initialDate),
+                        style = MaterialTheme.typography.h6
+                    )
                 }
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = DateTimeFormatter.ofPattern("MMMM dd, yyyy")
-                        .format(datePickerState.initialDate),
-                    style = MaterialTheme.typography.h6
-                )
             }
         }
     }
