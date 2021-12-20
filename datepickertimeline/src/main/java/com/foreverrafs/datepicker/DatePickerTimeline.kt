@@ -3,7 +3,6 @@ package com.foreverrafs.datepicker
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -32,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -75,8 +75,13 @@ fun DatePickerTimeline(
         mutableStateOf(state.initialDate.minusDays(pastDaysCount.toLong()))
     }
 
+    val currentEventDates by rememberUpdatedState(newValue = eventDates)
+
     SideEffect {
-        Log.d("Rafs", "DatePickerTimeline: Recomposing")
+        Log.d(
+            "Rafs",
+            "DatePickerTimeline: Recomposing. PastDaysCount = $pastDaysCount, startDate = $startDate"
+        )
     }
     var totalWindowWidth by remember { mutableStateOf(1) }
 
@@ -94,19 +99,33 @@ fun DatePickerTimeline(
         it.index == selectedDateIndex
     }
 
+    // We don't want smooth scrolling during initial composition
+    var isInitialComposition by remember {
+        mutableStateOf(true)
+    }
+
     // scroll to the selected date when it changes
     LaunchedEffect(state.initialDate) {
-        val scrollPosition = selectedDateIndex - span / 2
+        if (!isInitialComposition) {
+            val scrollPosition = selectedDateIndex - span / 2
 
-        if (scrollPosition <= 0) {
-            // Invalid start date, so just scroll to the first item
-            listState.animateScrollToItem(0)
-        } else if (state.shouldScrollToSelectedDate && !isVisible) {
-            listState.animateScrollToItem(scrollPosition)
+            if (scrollPosition <= 0) {
+                // Invalid start date, so just scroll to the first item
+                listState.animateScrollToItem(0)
+            } else if (state.shouldScrollToSelectedDate && !isVisible) {
+                listState.animateScrollToItem(scrollPosition)
+            }
+
+            // Reset the shouldScrollToSelectedDate flag
+            state.onScrollCompleted()
         }
+    }
 
-        // Reset the shouldScrollToSelectedDate flag
+    LaunchedEffect(Unit) {
+        listState.scrollToItem(selectedDateIndex)
+
         state.onScrollCompleted()
+        isInitialComposition = false
     }
 
     Surface(
@@ -151,9 +170,13 @@ fun DatePickerTimeline(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            val content: LazyListScope.() -> Unit = {
+            DatePickerLayout(
+                orientation = orientation,
+                listState = listState,
+            ) {
                 items(Integer.MAX_VALUE) { position ->
                     val date = startDate.plusDays(position.toLong())
+                    val isEventDate = currentEventDates.contains(date)
 
                     DateCard(
                         modifier = Modifier
@@ -174,14 +197,10 @@ fun DatePickerTimeline(
                         selectedBackgroundBrush = selectedBackgroundBrush,
                         selectedTextColor = selectedTextColor,
                         dateTextColor = dateTextColor,
-                        isEventDate = eventDates.contains(date),
+                        isEventDate = isEventDate,
                         eventIndicatorColor = eventIndicatorColor
                     )
                 }
-            }
-
-            DatePickerLayout(orientation = orientation, listState = listState) {
-                content()
             }
         }
     }
@@ -198,7 +217,6 @@ private fun DatePickerLayout(
             LazyColumn(
                 modifier = Modifier.testTag(tag = "datepickertimeline"),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(2.dp),
                 state = listState,
                 content = content
             )
@@ -207,7 +225,6 @@ private fun DatePickerLayout(
             LazyRow(
                 modifier = Modifier.testTag(tag = "datepickertimeline"),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
                 state = listState,
                 content = content
             )
@@ -299,7 +316,6 @@ private fun DateCard(
         )
 
         if (isEventDate) {
-
             Spacer(modifier = Modifier.height(2.dp))
 
             Divider(
