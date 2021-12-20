@@ -75,9 +75,10 @@ afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
+                from(components.getByName("release"))
                 groupId = "com.github.Rafsanjani"
-                artifactId = "datepicker-timeline"
-                version = "0.2.0"
+                artifactId = "datepickertimeline"
+                version = "0.3.0"
             }
         }
     }
