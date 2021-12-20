@@ -1,7 +1,6 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
-    id("maven-publish")
 }
 
 val composeVersion = "1.1.0-rc01"
@@ -19,7 +18,7 @@ android {
     buildTypes {
         buildTypes {
             getByName("release") {
-                isMinifyEnabled = true
+                isMinifyEnabled = false
                 proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             }
         }
@@ -41,6 +40,9 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+}
+apply {
+    from("../scripts/publish.gradle")
 }
 
 dependencies {
@@ -69,16 +71,4 @@ dependencies {
 
     testImplementation("org.assertj:assertj-core:3.21.0")
     androidTestImplementation("org.assertj:assertj-core:3.21.0")
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            create<MavenPublication>("release") {
-                groupId = "com.github.Rafsanjani"
-                artifactId = "datepicker-timeline"
-                version = "0.2.0"
-            }
-        }
-    }
 }
