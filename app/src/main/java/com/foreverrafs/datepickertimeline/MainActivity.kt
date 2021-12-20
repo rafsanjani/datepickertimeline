@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -56,19 +55,18 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App() {
     DatepickertimelineTheme {
-        DatePickerTimeline(onDateSelected = {}, orientation = Orientation.Vertical)
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier
                 .fillMaxSize(),
         ) {
-            Row(
+            Column(
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxSize()
             ) {
                 val datePickerState =
-                    rememberDatePickerState(initialDate = LocalDate.now())
+                    rememberDatePickerState(initialDate = LocalDate.of(2021, 5, 12))
 
                 var mainBackgroundColor by remember { mutableStateOf(Purple500) }
                 var selectedDateBackgroundColor by remember { mutableStateOf(Color.Black.copy(alpha = 0.35f)) }
@@ -76,13 +74,12 @@ fun App() {
                 var dateTextColor by remember { mutableStateOf(Color.White) }
                 val today = LocalDate.now()
 
-                LocalDate.of(2022, 1, 1)
                 DatePickerTimeline(
                     modifier = Modifier.wrapContentSize(),
                     onDateSelected = {},
                     backgroundColor = mainBackgroundColor,
                     state = datePickerState,
-                    orientation = Orientation.Vertical,
+                    orientation = Orientation.Horizontal,
                     selectedBackgroundColor = selectedDateBackgroundColor,
                     selectedTextColor = Color.White,
                     dateTextColor = dateTextColor,
@@ -101,10 +98,10 @@ fun App() {
                         )
                     },
                     pastDaysCount = 1,
-                    eventIndicatorColor = eventIndicatorColor
+                    eventIndicatorColor = eventIndicatorColor,
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 var selected by remember { mutableStateOf(Radio.MainBackground) }
 

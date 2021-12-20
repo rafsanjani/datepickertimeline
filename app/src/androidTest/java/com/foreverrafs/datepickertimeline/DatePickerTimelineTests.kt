@@ -67,6 +67,8 @@ internal class DatePickerTimelineTests : BaseTest() {
         }
 
         datePickerTimeLineRobot {
+            verifyDateIsDisplayed(date = "12/05/2020")
+
             performClickOnNodeWithTag(testTag = "button")
             verifyDateIsDisplayed(date = "20/06/2020")
         }
@@ -78,7 +80,7 @@ internal class DatePickerTimelineTests : BaseTest() {
             TestDatePickerContent(
                 state = rememberDatePickerState(
                     initialDate = LocalDate.of(
-                        2020,
+                        2021,
                         5,
                         12
                     )
@@ -87,14 +89,14 @@ internal class DatePickerTimelineTests : BaseTest() {
         }
 
         datePickerTimeLineRobot {
-            // Given the original date of 12/05/2020
-            verifyDateIsDisplayed(date = "12/05/2020")
+            // Given the original date of 12/05/2021
+            verifyDateIsDisplayed(date = "12/05/2021")
 
             // And I swipe right on the calendar three times
             performSwipeRightOnNodeWithTag(testTag = "datepickertimeline", times = 3)
 
             // Verify that the original date goes out of view
-            verifyDateIsNotDisplayed(date = "12/05/2020")
+            verifyDateIsNotDisplayed(date = "12/05/2021")
 
             // And when I click on the 'Today' text
             performClickOnNodeWithText(text = "Today")
