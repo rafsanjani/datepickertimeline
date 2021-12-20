@@ -1,6 +1,5 @@
 package com.foreverrafs.datepicker
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -26,7 +25,6 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,12 +76,6 @@ fun DatePickerTimeline(
 
     val currentEventDates by rememberUpdatedState(newValue = eventDates)
 
-    SideEffect {
-        Log.d(
-            "Rafs",
-            "DatePickerTimeline: Recomposing. PastDaysCount = $pastDaysCount, startDate = $startDate"
-        )
-    }
     var totalWindowWidth by remember { mutableStateOf(1) }
 
     val selectedDateIndex = DAYS.between(startDate, state.initialDate).toInt()
