@@ -54,6 +54,7 @@ import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit.DAYS
 import java.util.*
 
+@Suppress("LongMethod")
 @ExperimentalComposeUiApi
 @Composable
 fun DatePickerTimeline(
