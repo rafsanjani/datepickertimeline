@@ -1,5 +1,6 @@
 package com.foreverrafs.datepicker
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,6 +75,9 @@ fun DatePickerTimeline(
         mutableStateOf(state.initialDate.minusDays(pastDaysCount.toLong()))
     }
 
+    SideEffect {
+        Log.d("Rafs", "DatePickerTimeline: Recomposing")
+    }
     var totalWindowWidth by remember { mutableStateOf(1) }
 
     val selectedDateIndex = DAYS.between(startDate, state.initialDate).toInt()
@@ -91,11 +96,13 @@ fun DatePickerTimeline(
 
     // scroll to the selected date when it changes
     LaunchedEffect(state.initialDate) {
-        if (selectedDateIndex <= 0) {
+        val scrollPosition = selectedDateIndex - span / 2
+
+        if (scrollPosition <= 0) {
             // Invalid start date, so just scroll to the first item
             listState.animateScrollToItem(0)
         } else if (state.shouldScrollToSelectedDate && !isVisible) {
-            listState.animateScrollToItem(selectedDateIndex - span / 2)
+            listState.animateScrollToItem(scrollPosition)
         }
 
         // Reset the shouldScrollToSelectedDate flag
