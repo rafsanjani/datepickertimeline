@@ -47,6 +47,16 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: gradle
+          
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
