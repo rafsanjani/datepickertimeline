@@ -132,7 +132,6 @@ fun DatePickerTimeline(
         Column(
             modifier = Modifier
                 .then(if (orientation == Orientation.Vertical) Modifier.fillMaxHeight() else Modifier.fillMaxWidth())
-                .clip(RoundedCornerShape(size = 4.dp))
                 .background(brush = backgroundBrush)
                 .padding(8.dp),
         ) {
