@@ -65,6 +65,8 @@ dependencies {
     // Material design icons
     implementation("androidx.compose.material:material-icons-core:$composeVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
+    testImplementation("io.mockk:mockk:1.12.2")
+    testImplementation("org.assertj:assertj-core:3.21.0")
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
