@@ -36,7 +36,7 @@ jobs:
 
   Automation:
     needs: Build
-    runs-on: macos-latest
+    runs-on: buildjet-8vcpu-ubuntu-2004
     steps:
       - name: checkout
         uses: actions/checkout@v3
