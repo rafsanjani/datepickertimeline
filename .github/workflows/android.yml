@@ -61,5 +61,6 @@ jobs:
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: 28
+          ram-size: 2048M
           script: ./gradlew app:connectedCheck
