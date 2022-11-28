@@ -6,12 +6,12 @@ plugins {
 val composeVersion = "1.1.1"
 
 android {
-    compileSdk = 31
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.foreverrafs.datepickertimeline"
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -63,6 +63,7 @@ android {
             )
         }
     }
+    namespace = "com.foreverrafs.datepickertimeline"
 }
 
 dependencies {
@@ -98,5 +99,5 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.0")
 }

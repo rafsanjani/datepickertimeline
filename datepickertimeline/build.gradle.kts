@@ -6,11 +6,11 @@ plugins {
 val composeVersion = "1.1.1"
 
 android {
-    compileSdk = 31
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,14 +40,15 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    namespace = "com.foreverrafs.datepicker"
 }
 apply {
     from("../scripts/publish.gradle")
 }
 
 dependencies {
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
-    implementation("androidx.core:core-ktx:1.8.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.0")
+    implementation("androidx.core:core-ktx:1.9.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.4")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
@@ -65,11 +66,11 @@ dependencies {
     // Material design icons
     implementation("androidx.compose.material:material-icons-core:$composeVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
-    testImplementation("org.assertj:assertj-core:3.22.0")
+    testImplementation("org.assertj:assertj-core:3.23.1")
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
 
-    testImplementation("org.assertj:assertj-core:3.22.0")
-    androidTestImplementation("org.assertj:assertj-core:3.22.0")
+    testImplementation("org.assertj:assertj-core:3.23.1")
+    androidTestImplementation("org.assertj:assertj-core:3.23.1")
 }
