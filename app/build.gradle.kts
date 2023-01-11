@@ -82,7 +82,7 @@ dependencies {
     implementation(project(mapOf("path" to ":datepickertimeline")))
 
     // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.3")
     testImplementation("org.assertj:assertj-core:3.23.1")
     androidTestImplementation("org.assertj:assertj-core:3.23.1")
 
