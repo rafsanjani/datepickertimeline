@@ -83,8 +83,8 @@ dependencies {
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.2")
-    testImplementation("org.assertj:assertj-core:3.23.1")
-    androidTestImplementation("org.assertj:assertj-core:3.23.1")
+    testImplementation("org.assertj:assertj-core:3.24.2")
+    androidTestImplementation("org.assertj:assertj-core:3.24.2")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.5.1")

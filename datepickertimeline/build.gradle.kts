@@ -67,11 +67,11 @@ dependencies {
     // Material design icons
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
-    testImplementation("org.assertj:assertj-core:3.23.1")
+    testImplementation("org.assertj:assertj-core:3.24.2")
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    testImplementation("org.assertj:assertj-core:3.23.1")
-    androidTestImplementation("org.assertj:assertj-core:3.23.1")
+    testImplementation("org.assertj:assertj-core:3.24.2")
+    androidTestImplementation("org.assertj:assertj-core:3.24.2")
 }
