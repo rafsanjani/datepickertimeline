@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -51,6 +50,9 @@ import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit.DAYS
 import java.util.*
+
+private val EVENT_INDICATOR_SIZE = 8.dp
+private val CALENDAR_DATE_ITEM_SIZE = 100.dp
 
 @Suppress("LongMethod")
 @ExperimentalComposeUiApi
@@ -133,7 +135,7 @@ fun DatePickerTimeline(
             modifier = Modifier
                 .then(if (orientation == Orientation.Vertical) Modifier.fillMaxHeight() else Modifier.fillMaxWidth())
                 .background(brush = backgroundBrush)
-                .padding(8.dp),
+                .padding(4.dp),
         ) {
             Box(
                 modifier = Modifier
@@ -149,8 +151,12 @@ fun DatePickerTimeline(
                             // calendar. Technically they still have today's date selected so clicking on the 'Today'
                             // text after the fling animation does nothing. We perform this extra step to see if today's
                             // date is visible on the screen. If yes, do nothing, else scroll to it
+                            val requiredItemPosition = selectedDateIndex - span / 2
+
                             if (!isVisible) {
-                                listState.animateScrollToItem(selectedDateIndex - span / 2)
+                                listState.animateScrollToItem(
+                                    if (requiredItemPosition >= 0) requiredItemPosition else 0
+                                )
                             }
                         }
                     }
@@ -162,9 +168,14 @@ fun DatePickerTimeline(
 
             Spacer(modifier = Modifier.height(4.dp))
 
+            val hasEvent = remember {
+                eventDates.isNotEmpty()
+            }
+
             DatePickerLayout(
                 orientation = orientation,
                 listState = listState,
+                hasEvent = hasEvent
             ) {
                 items(Integer.MAX_VALUE) { position ->
                     val date = startDate.plusDays(position.toLong())
@@ -202,6 +213,7 @@ fun DatePickerTimeline(
 private fun DatePickerLayout(
     orientation: Orientation,
     listState: LazyListState,
+    hasEvent: Boolean,
     content: LazyListScope.() -> Unit,
 ) {
     when (orientation) {
@@ -213,12 +225,17 @@ private fun DatePickerLayout(
                 content = content
             )
         }
+
         Orientation.Horizontal -> {
+            val combinedSize = CALENDAR_DATE_ITEM_SIZE + EVENT_INDICATOR_SIZE
+
             LazyRow(
-                modifier = Modifier.testTag(tag = "datepickertimeline"),
-                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .testTag(tag = "datepickertimeline")
+                    .height(if (hasEvent) combinedSize else CALENDAR_DATE_ITEM_SIZE),
                 state = listState,
-                content = content
+                content = content,
+
             )
         }
     }
@@ -291,10 +308,13 @@ private fun DateCard(
     ) {
         val textColor = if (isSelected) selectedTextColor else dateTextColor
 
+        // Month
         Text(
             text = date.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).uppercase(),
             color = textColor
         )
+
+        // Day of month
         Text(
             text = date.dayOfMonth.toString(),
             fontWeight = FontWeight.ExtraBold,
@@ -302,20 +322,18 @@ private fun DateCard(
             color = textColor
         )
 
+        // Day of week
         Text(
             text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).uppercase(),
             color = textColor
         )
 
         if (isEventDate) {
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Divider(
+            Box(
                 modifier = Modifier
-                    .clip(CircleShape)
-                    .width(14.dp),
-                thickness = 3.dp,
-                color = eventIndicatorColor
+                    .padding(2.dp)
+                    .background(color = eventIndicatorColor, shape = CircleShape)
+                    .size(8.dp)
             )
         }
     }
