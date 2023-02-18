@@ -27,9 +27,6 @@ class DatePickerState(
         _shouldScrollToSelectedDate = false
     }
 
-    internal fun onLayoutInfoChanged(layoutInfo: LazyListItemInfo) {
-    }
-
     val shouldScrollToSelectedDate: Boolean
         get() = _shouldScrollToSelectedDate
 
@@ -52,7 +49,6 @@ class DatePickerState(
 
     private var _lastVisibleDate by mutableStateOf<LocalDate?>(null)
     val lastVisibleDate get() = _lastVisibleDate
-
 
     companion object {
         val Saver: Saver<DatePickerState, *> = listSaver(
