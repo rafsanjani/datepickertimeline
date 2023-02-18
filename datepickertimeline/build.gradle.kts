@@ -3,14 +3,13 @@ plugins {
     id("kotlin-android")
 }
 
-val composeBOM = "2022.11.00"
+val composeBOM = "2023.01.00"
 
 android {
     compileSdk = 33
 
     defaultConfig {
-        minSdk = 24
-        targetSdk = 33
+        minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -30,7 +29,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
+        kotlinCompilerExtensionVersion = "1.4.2"
     }
 
     buildFeatures {
@@ -48,11 +47,11 @@ apply {
 
 dependencies {
     implementation(platform("androidx.compose:compose-bom:$composeBOM"))
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
     implementation("androidx.core:core-ktx:1.9.0")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.4")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("androidx.compose.ui:ui")
 
     // Tooling support (Previews, etc.)

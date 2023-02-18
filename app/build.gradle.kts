@@ -3,14 +3,14 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
-val composeBOM = "2022.11.00"
+val composeBOM = "2023.01.00"
 
 android {
     compileSdk = 33
 
     defaultConfig {
         applicationId = "com.foreverrafs.datepickertimeline"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -54,7 +54,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2"
+        kotlinCompilerExtensionVersion = "1.4.2"
     }
     packagingOptions {
         resources {
@@ -82,23 +82,23 @@ dependencies {
     implementation(project(mapOf("path" to ":datepickertimeline")))
 
     // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.3")
     testImplementation("org.assertj:assertj-core:3.23.1")
     androidTestImplementation("org.assertj:assertj-core:3.23.1")
 
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.appcompat:appcompat:1.5.1")
-    implementation("com.godaddy.android.colorpicker:compose-color-picker-android:0.5.1")
-    implementation("com.google.android.material:material:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.godaddy.android.colorpicker:compose-color-picker-android:0.6.0")
+    implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material:material")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
     implementation("androidx.activity:activity-compose:1.6.1")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.4")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
 }
