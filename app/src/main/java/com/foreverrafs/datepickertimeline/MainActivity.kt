@@ -1,6 +1,7 @@
 package com.foreverrafs.datepickertimeline
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -131,17 +132,18 @@ fun App() {
                     )
 
                     ClassicColorPicker(
-                        color = mainBackgroundColor,
                         modifier = Modifier.height(250.dp),
-                        onColorChanged = { color: HsvColor ->
+                        color = HsvColor.from(color = mainBackgroundColor), onColorChanged = { color: HsvColor ->
                             when (selected) {
                                 Radio.MainBackground -> mainBackgroundColor = color.toColor()
                                 Radio.SelectedDateBackground ->
                                     selectedDateBackgroundColor =
                                         color.toColor()
+
                                 Radio.DateTextColor ->
                                     dateTextColor =
                                         color.toColor()
+
                                 Radio.EventIndicatorColor ->
                                     eventIndicatorColor = color.toColor()
                             }

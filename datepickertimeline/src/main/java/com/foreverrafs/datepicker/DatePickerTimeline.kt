@@ -1,5 +1,6 @@
 package com.foreverrafs.datepicker
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -22,14 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -90,9 +84,7 @@ fun DatePickerTimeline(
     val listState = rememberLazyListState()
 
     // Don't scroll if selected date is already visible on the screen
-    val isVisible = listState.layoutInfo.visibleItemsInfo.any {
-        it.index == selectedDateIndex
-    }
+    val isVisible by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.any { it.index == selectedDateIndex } } }
 
     // We don't want smooth scrolling during initial composition
     var isInitialComposition by remember {
@@ -172,6 +164,16 @@ fun DatePickerTimeline(
                 eventDates.isNotEmpty()
             }
 
+
+            val visibleItemsInfo by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo } }
+
+            val firstVisibleDate = visibleItemsInfo.firstOrNull()?.index?.toLong()?.let { startDate.plusDays(it) }
+            val lastVisibleDate = visibleItemsInfo.lastOrNull()?.index?.toLong()?.let { startDate.plusDays(it) }
+
+            LaunchedEffect(key1 = firstVisibleDate, key2 = lastVisibleDate) {
+                state.setVisibleDates(firstVisibleDate, lastVisibleDate)
+            }
+
             DatePickerLayout(
                 orientation = orientation,
                 listState = listState,
@@ -186,10 +188,10 @@ fun DatePickerTimeline(
                             .onPlaced {
                                 span =
                                     totalWindowWidth / if (orientation == Orientation.Horizontal) {
-                                    it.size.width
-                                } else {
-                                    it.size.height
-                                }
+                                        it.size.width
+                                    } else {
+                                        it.size.height
+                                    }
                             },
                         date = date,
                         isSelected = date == state.initialDate,
@@ -209,6 +211,7 @@ fun DatePickerTimeline(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DatePickerLayout(
     orientation: Orientation,
@@ -235,7 +238,6 @@ private fun DatePickerLayout(
                     .height(if (hasEvent) combinedSize else CALENDAR_DATE_ITEM_SIZE),
                 state = listState,
                 content = content,
-
             )
         }
     }

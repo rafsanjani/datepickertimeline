@@ -1,5 +1,7 @@
 package com.foreverrafs.datepicker.state
 
+import androidx.compose.foundation.lazy.LazyListItemInfo
+import androidx.compose.foundation.lazy.LazyListLayoutInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -11,38 +13,46 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.structuralEqualityPolicy
 import java.time.LocalDate
 
-@Stable
-interface DatePickerState {
-    val initialDate: LocalDate
-    val shouldScrollToSelectedDate: Boolean
-    fun smoothScrollToDate(date: LocalDate)
-    fun onScrollCompleted()
-}
-
-internal class DatePickerStateImpl(
+class DatePickerState(
     selectedDate: LocalDate,
     shouldScrollToSelectedDate: Boolean = true
-) : DatePickerState {
+) {
     private var _initialDate by mutableStateOf(selectedDate, structuralEqualityPolicy())
     private var _shouldScrollToSelectedDate by mutableStateOf(
         shouldScrollToSelectedDate,
         structuralEqualityPolicy()
     )
 
-    override fun onScrollCompleted() {
+    internal fun onScrollCompleted() {
         _shouldScrollToSelectedDate = false
     }
 
-    override val shouldScrollToSelectedDate: Boolean
+    internal fun onLayoutInfoChanged(layoutInfo: LazyListItemInfo) {
+    }
+
+    val shouldScrollToSelectedDate: Boolean
         get() = _shouldScrollToSelectedDate
 
-    override val initialDate: LocalDate
+    val initialDate: LocalDate
         get() = _initialDate
 
-    override fun smoothScrollToDate(date: LocalDate) {
+    fun smoothScrollToDate(date: LocalDate) {
         _shouldScrollToSelectedDate = true
         _initialDate = date
     }
+
+
+    fun setVisibleDates(firstDate: LocalDate?, lastDate: LocalDate?) {
+        _firstVisibleDate = firstDate
+        _lastVisibleDate = lastDate
+    }
+
+    private var _firstVisibleDate by mutableStateOf<LocalDate?>(null)
+    val firstVisibleDate get() = _firstVisibleDate
+
+    private var _lastVisibleDate by mutableStateOf<LocalDate?>(null)
+    val lastVisibleDate get() = _lastVisibleDate
+
 
     companion object {
         val Saver: Saver<DatePickerState, *> = listSaver(
@@ -55,7 +65,7 @@ internal class DatePickerStateImpl(
                 )
             },
             restore = {
-                DatePickerStateImpl(
+                DatePickerState(
                     selectedDate = LocalDate.of(
                         it[0].toString().toInt(), // year
                         it[1].toString().toInt(), // month
@@ -72,4 +82,4 @@ internal class DatePickerStateImpl(
 
 @Composable
 fun rememberDatePickerState(initialDate: LocalDate = LocalDate.now()) =
-    rememberSaveable(saver = DatePickerStateImpl.Saver) { DatePickerStateImpl(initialDate) }
+    rememberSaveable(saver = DatePickerState.Saver) { DatePickerState(initialDate) }
