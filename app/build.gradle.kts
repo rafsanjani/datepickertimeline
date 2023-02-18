@@ -64,6 +64,10 @@ android {
         }
     }
     namespace = "com.foreverrafs.datepickertimeline"
+
+    testOptions {
+        animationsDisabled = true
+    }
 }
 
 dependencies {
