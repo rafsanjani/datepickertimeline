@@ -1,9 +1,9 @@
 package com.foreverrafs.datepicker
 
-import com.foreverrafs.datepicker.state.DatePickerStateImpl
+import com.foreverrafs.datepicker.state.DatePickerState
+import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.time.LocalDate
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -14,7 +14,7 @@ class DatePickerStateTest {
     @Test
     fun testInitialDateIsEqualToSelectedDate() {
         val selectedDate = LocalDate.of(2021, 12, 12)
-        val state = DatePickerStateImpl(
+        val state = DatePickerState(
             selectedDate = selectedDate,
             shouldScrollToSelectedDate = true
         )
@@ -24,7 +24,7 @@ class DatePickerStateTest {
 
     @Test
     fun testScrollingFlagResetsAfterScrolling() {
-        val state = DatePickerStateImpl(
+        val state = DatePickerState(
             selectedDate = LocalDate.now(),
             shouldScrollToSelectedDate = true
         )
@@ -37,7 +37,7 @@ class DatePickerStateTest {
     @Test
     fun testScrollingActuallyOccursDuringSmoothScrolling() {
         val originalDate = LocalDate.of(2021, 12, 12)
-        val state = DatePickerStateImpl(
+        val state = DatePickerState(
             selectedDate = originalDate,
             shouldScrollToSelectedDate = false
         )

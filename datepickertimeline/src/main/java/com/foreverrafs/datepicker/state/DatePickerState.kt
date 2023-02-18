@@ -1,9 +1,6 @@
 package com.foreverrafs.datepicker.state
 
-import androidx.compose.foundation.lazy.LazyListItemInfo
-import androidx.compose.foundation.lazy.LazyListLayoutInfo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.Saver
@@ -15,7 +12,7 @@ import java.time.LocalDate
 
 class DatePickerState(
     selectedDate: LocalDate,
-    shouldScrollToSelectedDate: Boolean = true
+    shouldScrollToSelectedDate: Boolean = true,
 ) {
     private var _initialDate by mutableStateOf(selectedDate, structuralEqualityPolicy())
     private var _shouldScrollToSelectedDate by mutableStateOf(
@@ -37,7 +34,6 @@ class DatePickerState(
         _shouldScrollToSelectedDate = true
         _initialDate = date
     }
-
 
     fun setVisibleDates(firstDate: LocalDate?, lastDate: LocalDate?) {
         _firstVisibleDate = firstDate

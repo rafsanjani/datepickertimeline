@@ -1,6 +1,5 @@
 package com.foreverrafs.datepicker
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,7 +22,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -43,7 +50,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.ChronoUnit.DAYS
-import java.util.*
+import java.util.Locale
 
 private val EVENT_INDICATOR_SIZE = 8.dp
 private val CALENDAR_DATE_ITEM_SIZE = 100.dp
@@ -84,7 +91,13 @@ fun DatePickerTimeline(
     val listState = rememberLazyListState()
 
     // Don't scroll if selected date is already visible on the screen
-    val isVisible by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo.any { it.index == selectedDateIndex } } }
+    val isVisible by remember {
+        derivedStateOf {
+            listState.layoutInfo.visibleItemsInfo.any {
+                it.index == selectedDateIndex
+            }
+        }
+    }
 
     // We don't want smooth scrolling during initial composition
     var isInitialComposition by remember {
@@ -125,9 +138,15 @@ fun DatePickerTimeline(
     ) {
         Column(
             modifier = Modifier
-                .then(if (orientation == Orientation.Vertical) Modifier.fillMaxHeight() else Modifier.fillMaxWidth())
+                .then(
+                    if (orientation == Orientation.Vertical) {
+                        Modifier.fillMaxHeight()
+                    } else {
+                        Modifier.fillMaxWidth()
+                    }
+                )
                 .background(brush = backgroundBrush)
-                .padding(4.dp),
+                .padding(4.dp)
         ) {
             Box(
                 modifier = Modifier
@@ -164,11 +183,16 @@ fun DatePickerTimeline(
                 eventDates.isNotEmpty()
             }
 
+            val visibleItemsInfo by remember {
+                derivedStateOf { listState.layoutInfo.visibleItemsInfo }
+            }
 
-            val visibleItemsInfo by remember { derivedStateOf { listState.layoutInfo.visibleItemsInfo } }
-
-            val firstVisibleDate = visibleItemsInfo.firstOrNull()?.index?.toLong()?.let { startDate.plusDays(it) }
-            val lastVisibleDate = visibleItemsInfo.lastOrNull()?.index?.toLong()?.let { startDate.plusDays(it) }
+            val firstVisibleDate = visibleItemsInfo.firstOrNull()?.index?.toLong()?.let {
+                startDate.plusDays(it)
+            }
+            val lastVisibleDate = visibleItemsInfo.lastOrNull()?.index?.toLong()?.let {
+                startDate.plusDays(it)
+            }
 
             LaunchedEffect(key1 = firstVisibleDate, key2 = lastVisibleDate) {
                 state.setVisibleDates(firstVisibleDate, lastVisibleDate)
@@ -188,10 +212,10 @@ fun DatePickerTimeline(
                             .onPlaced {
                                 span =
                                     totalWindowWidth / if (orientation == Orientation.Horizontal) {
-                                        it.size.width
-                                    } else {
-                                        it.size.height
-                                    }
+                                    it.size.width
+                                } else {
+                                    it.size.height
+                                }
                             },
                         date = date,
                         isSelected = date == state.initialDate,
@@ -211,13 +235,12 @@ fun DatePickerTimeline(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DatePickerLayout(
     orientation: Orientation,
     listState: LazyListState,
     hasEvent: Boolean,
-    content: LazyListScope.() -> Unit,
+    content: LazyListScope.() -> Unit
 ) {
     when (orientation) {
         Orientation.Vertical -> {
@@ -237,7 +260,7 @@ private fun DatePickerLayout(
                     .testTag(tag = "datepickertimeline")
                     .height(if (hasEvent) combinedSize else CALENDAR_DATE_ITEM_SIZE),
                 state = listState,
-                content = content,
+                content = content
             )
         }
     }
@@ -271,7 +294,7 @@ fun DatePickerTimeline(
         onDateSelected = onDateSelected,
         selectedTextColor = selectedTextColor,
         dateTextColor = dateTextColor,
-        todayLabel = todayLabel,
+        todayLabel = todayLabel
     )
 }
 
@@ -297,16 +320,18 @@ private fun DateCard(
                 if (isSelected) {
                     Modifier.background(
                         brush = selectedBackgroundBrush,
-                        alpha = 0.65f,
+                        alpha = 0.65f
                     )
-                } else Modifier
+                } else {
+                    Modifier
+                }
             )
             .padding(vertical = 4.dp)
             .clickable {
                 onDateSelected(date)
             }
             .padding(vertical = 2.dp, horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val textColor = if (isSelected) selectedTextColor else dateTextColor
 
