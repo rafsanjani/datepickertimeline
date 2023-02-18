@@ -1,5 +1,6 @@
 package com.foreverrafs.datepicker
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -70,7 +71,7 @@ fun DatePickerTimeline(
     selectedTextColor: Color = MaterialTheme.colors.onSurface,
     dateTextColor: Color = MaterialTheme.colors.onSurface,
     todayLabel: @Composable BoxScope.() -> Unit = {},
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
 ) {
     // The first date shown on the calendar
     val startDate by remember {
@@ -106,14 +107,16 @@ fun DatePickerTimeline(
 
     // scroll to the selected date when it changes
     LaunchedEffect(state.initialDate) {
-        if (!isInitialComposition) {
-            val scrollPosition = selectedDateIndex - span / 2
+        // Scroll position should at least be 0
+        val scrollPosition = (selectedDateIndex - span / 2).coerceAtLeast(0)
 
-            if (scrollPosition <= 0) {
-                // Invalid start date, so just scroll to the first item
-                listState.animateScrollToItem(0)
-            } else if (state.shouldScrollToSelectedDate && !isVisible) {
-                listState.animateScrollToItem(scrollPosition)
+        if (state.shouldScrollToSelectedDate) {
+            if (isInitialComposition) {
+                listState.scrollToItem(scrollPosition)
+            } else {
+                listState.animateScrollToItem(
+                    scrollPosition
+                )
             }
 
             // Reset the shouldScrollToSelectedDate flag
@@ -130,11 +133,13 @@ fun DatePickerTimeline(
 
     Surface(
         elevation = 6.dp,
-        modifier = modifier
-            .onPlaced {
-                totalWindowWidth =
-                    if (orientation == Orientation.Horizontal) it.size.width else it.size.height
+        modifier = modifier.onPlaced {
+            totalWindowWidth = if (orientation == Orientation.Horizontal) {
+                it.size.width
+            } else {
+                it.size.height
             }
+        }
     ) {
         Column(
             modifier = Modifier
@@ -151,7 +156,9 @@ fun DatePickerTimeline(
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(
+                        RoundedCornerShape(12.dp)
+                    )
                     .clickable {
                         coroutineScope.launch {
                             state.smoothScrollToDate(LocalDate.now())
@@ -183,18 +190,25 @@ fun DatePickerTimeline(
                 eventDates.isNotEmpty()
             }
 
-            val visibleItemsInfo by remember {
-                derivedStateOf { listState.layoutInfo.visibleItemsInfo }
+            val visibleItemsCount by remember {
+                derivedStateOf { listState.layoutInfo.visibleItemsInfo.size }
             }
+            val firstVisibleItemIndex by remember {
+                derivedStateOf { listState.firstVisibleItemIndex }
+            }
+            val lastVisibleItemIndex = (firstVisibleItemIndex + visibleItemsCount - 1)
+                .coerceAtLeast(
+                    0
+                )
 
-            val firstVisibleDate = visibleItemsInfo.firstOrNull()?.index?.toLong()?.let {
-                startDate.plusDays(it)
-            }
-            val lastVisibleDate = visibleItemsInfo.lastOrNull()?.index?.toLong()?.let {
-                startDate.plusDays(it)
-            }
+            LaunchedEffect(key1 = firstVisibleItemIndex, key2 = lastVisibleItemIndex) {
+                val firstVisibleDate = startDate.plusDays(firstVisibleItemIndex.toLong())
+                val lastVisibleDate = startDate.plusDays(lastVisibleItemIndex.toLong())
 
-            LaunchedEffect(key1 = firstVisibleDate, key2 = lastVisibleDate) {
+                Log.d(
+                    "Rafs",
+                    "$firstVisibleDate \n $lastVisibleDate"
+                )
                 state.setVisibleDates(firstVisibleDate, lastVisibleDate)
             }
 
@@ -208,15 +222,13 @@ fun DatePickerTimeline(
                     val isEventDate = currentEventDates.contains(date)
 
                     DateCard(
-                        modifier = Modifier
-                            .onPlaced {
-                                span =
-                                    totalWindowWidth / if (orientation == Orientation.Horizontal) {
-                                    it.size.width
-                                } else {
-                                    it.size.height
-                                }
-                            },
+                        modifier = Modifier.onPlaced {
+                            span = totalWindowWidth / if (orientation == Orientation.Horizontal) {
+                                it.size.width
+                            } else {
+                                it.size.height
+                            }
+                        },
                         date = date,
                         isSelected = date == state.initialDate,
                         onDateSelected = {
@@ -240,7 +252,7 @@ private fun DatePickerLayout(
     orientation: Orientation,
     listState: LazyListState,
     hasEvent: Boolean,
-    content: LazyListScope.() -> Unit
+    content: LazyListScope.() -> Unit,
 ) {
     when (orientation) {
         Orientation.Vertical -> {
@@ -280,7 +292,7 @@ fun DatePickerTimeline(
     dateTextColor: Color = MaterialTheme.colors.onSurface,
     selectedTextColor: Color = MaterialTheme.colors.onSurface,
     todayLabel: @Composable BoxScope.() -> Unit = {},
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
 ) {
     DatePickerTimeline(
         modifier = modifier,
@@ -310,12 +322,14 @@ private fun DateCard(
     onDateSelected: (LocalDate) -> Unit,
     selectedBackgroundBrush: Brush,
     selectedTextColor: Color = MaterialTheme.colors.onSurface,
-    dateTextColor: Color = MaterialTheme.colors.onSurface
+    dateTextColor: Color = MaterialTheme.colors.onSurface,
 ) {
     Column(
         modifier = modifier
             .testTag(tag = dateFormatter.format(date))
-            .clip(shape = RoundedCornerShape(16.dp))
+            .clip(
+                shape = RoundedCornerShape(16.dp)
+            )
             .then(
                 if (isSelected) {
                     Modifier.background(
@@ -359,7 +373,10 @@ private fun DateCard(
             Box(
                 modifier = Modifier
                     .padding(2.dp)
-                    .background(color = eventIndicatorColor, shape = CircleShape)
+                    .background(
+                        color = eventIndicatorColor,
+                        shape = CircleShape
+                    )
                     .size(8.dp)
             )
         }
