@@ -93,11 +93,29 @@ fun DatePickerTimeline(
 
     val listState = rememberLazyListState()
 
-    // Don't scroll if selected date is already visible on the screen
-    val isSelectedDateVisible by remember {
+    val fullyVisibleIndices: List<Int> by remember {
         derivedStateOf {
-            listState.layoutInfo.visibleItemsInfo.any {
-                it.index == selectedDateIndex
+            val layoutInfo = listState.layoutInfo
+            val visibleItemsInfo = layoutInfo.visibleItemsInfo
+            if (visibleItemsInfo.isEmpty()) {
+                emptyList()
+            } else {
+                val fullyVisibleItemsInfo = visibleItemsInfo.toMutableList()
+
+                val lastItem = fullyVisibleItemsInfo.last()
+
+                val viewportHeight = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
+
+                if (lastItem.offset + lastItem.size > viewportHeight) {
+                    fullyVisibleItemsInfo.removeLast()
+                }
+
+                val firstItemIfLeft = fullyVisibleItemsInfo.firstOrNull()
+                if (firstItemIfLeft != null && firstItemIfLeft.offset < layoutInfo.viewportStartOffset) {
+                    fullyVisibleItemsInfo.removeFirst()
+                }
+
+                fullyVisibleItemsInfo.map { it.index }
             }
         }
     }
@@ -111,6 +129,8 @@ fun DatePickerTimeline(
     LaunchedEffect(state.initialDate) {
         // Scroll position should at least be 0
         val scrollPosition = (selectedDateIndex - span / 2).coerceAtLeast(0)
+
+        val isSelectedDateVisible = fullyVisibleIndices.contains(selectedDateIndex)
 
         if (state.shouldScrollToSelectedDate) {
             if (isInitialComposition) {
@@ -164,20 +184,6 @@ fun DatePickerTimeline(
                     .clickable {
                         coroutineScope.launch {
                             state.smoothScrollToDate(LocalDate.now())
-
-                            // state.smoothScrollToDate is backed by a MutableState which doesn't cause recomposition
-                            // when the user still has today's date selected because currentValue will be the same
-                            // as the applied value. This can happen when the user selects today's date and flings the
-                            // calendar. Technically they still have today's date selected so clicking on the 'Today'
-                            // text after the fling animation does nothing. We perform this extra step to see if today's
-                            // date is visible on the screen. If yes, do nothing, else scroll to it
-                            val requiredItemPosition = selectedDateIndex - span / 2
-
-                            if (!isSelectedDateVisible) {
-                                listState.animateScrollToItem(
-                                    if (requiredItemPosition >= 0) requiredItemPosition else 0
-                                )
-                            }
                         }
                     }
                     .wrapContentSize(),
@@ -249,6 +255,7 @@ fun DatePickerTimeline(
     }
 }
 
+@OptIn(ExperimentalSnapperApi::class)
 @Composable
 private fun DatePickerLayout(
     orientation: Orientation,
