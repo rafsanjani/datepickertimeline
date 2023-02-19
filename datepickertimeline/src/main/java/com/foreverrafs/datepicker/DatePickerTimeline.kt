@@ -92,7 +92,7 @@ fun DatePickerTimeline(
     val listState = rememberLazyListState()
 
     // Don't scroll if selected date is already visible on the screen
-    val isVisible by remember {
+    val isSelectedDateVisible by remember {
         derivedStateOf {
             listState.layoutInfo.visibleItemsInfo.any {
                 it.index == selectedDateIndex
@@ -113,7 +113,7 @@ fun DatePickerTimeline(
         if (state.shouldScrollToSelectedDate) {
             if (isInitialComposition) {
                 listState.scrollToItem(scrollPosition)
-            } else {
+            } else if (!isSelectedDateVisible) {
                 listState.animateScrollToItem(
                     scrollPosition
                 )
@@ -171,7 +171,7 @@ fun DatePickerTimeline(
                             // date is visible on the screen. If yes, do nothing, else scroll to it
                             val requiredItemPosition = selectedDateIndex - span / 2
 
-                            if (!isVisible) {
+                            if (!isSelectedDateVisible) {
                                 listState.animateScrollToItem(
                                     if (requiredItemPosition >= 0) requiredItemPosition else 0
                                 )
