@@ -73,4 +73,7 @@ dependencies {
 
     testImplementation("org.assertj:assertj-core:3.23.1")
     androidTestImplementation("org.assertj:assertj-core:3.23.1")
+
+    // Snapper
+    implementation("dev.chrisbanes.snapper:snapper:0.3.0")
 }

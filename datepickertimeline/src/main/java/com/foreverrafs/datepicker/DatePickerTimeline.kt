@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.foreverrafs.datepicker.state.DatePickerState
 import com.foreverrafs.datepicker.state.rememberDatePickerState
+import dev.chrisbanes.snapper.ExperimentalSnapperApi
+import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -254,13 +256,17 @@ private fun DatePickerLayout(
     hasEvent: Boolean,
     content: LazyListScope.() -> Unit,
 ) {
+    val flingBehavior = rememberSnapperFlingBehavior(listState)
+    val testTag = "datepickertimeline"
+
     when (orientation) {
         Orientation.Vertical -> {
             LazyColumn(
-                modifier = Modifier.testTag(tag = "datepickertimeline"),
+                modifier = Modifier.testTag(tag = testTag),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 state = listState,
-                content = content
+                content = content,
+                flingBehavior = flingBehavior
             )
         }
 
@@ -269,10 +275,12 @@ private fun DatePickerLayout(
 
             LazyRow(
                 modifier = Modifier
-                    .testTag(tag = "datepickertimeline")
+                    .testTag(tag = testTag)
                     .height(if (hasEvent) combinedSize else CALENDAR_DATE_ITEM_SIZE),
                 state = listState,
-                content = content
+                content = content,
+                flingBehavior = flingBehavior
+
             )
         }
     }
