@@ -213,10 +213,6 @@ fun DatePickerTimeline(
                 val firstVisibleDate = startDate.plusDays(firstVisibleItemIndex.toLong())
                 val lastVisibleDate = startDate.plusDays(lastVisibleItemIndex.toLong())
 
-                Log.d(
-                    "Rafs",
-                    "$firstVisibleDate \n $lastVisibleDate"
-                )
                 state.setVisibleDates(firstVisibleDate, lastVisibleDate)
             }
 
