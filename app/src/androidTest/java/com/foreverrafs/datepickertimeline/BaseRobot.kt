@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
 
 internal open class BaseRobot(private val rule: ComposeTestRule) {
@@ -35,12 +36,22 @@ internal open class BaseRobot(private val rule: ComposeTestRule) {
             }
     }
 
+    fun performSwipeLeftOnNodeWithTag(testTag: String, times: Int = 1) {
+        rule.onNodeWithTag(testTag = testTag)
+            .assertExists()
+            .performTouchInput {
+                repeat(times) {
+                    swipeLeft()
+                }
+            }
+    }
+
     // Assertions
     fun verifyNodeWithTextIsDisplayed(
         text: String,
         ignoreCase: Boolean = true,
     ) {
-        rule.onNodeWithText(text = text, ignoreCase = true)
+        rule.onNodeWithText(text = text, ignoreCase = ignoreCase)
             .assertIsDisplayed()
     }
 
@@ -62,7 +73,7 @@ internal open class BaseRobot(private val rule: ComposeTestRule) {
         text: String,
         ignoreCase: Boolean = true,
     ) {
-        rule.onNodeWithText(text = text, ignoreCase = true)
+        rule.onNodeWithText(text = text, ignoreCase = ignoreCase)
             .assertExists()
             .assertIsNotDisplayed()
     }

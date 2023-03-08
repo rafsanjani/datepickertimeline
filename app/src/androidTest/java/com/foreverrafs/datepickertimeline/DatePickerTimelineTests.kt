@@ -25,7 +25,7 @@ internal class DatePickerTimelineTests : BaseTest() {
     fun TestDatePickerContent(
         state: DatePickerState,
         pastDaysCount: Int = 180,
-        onButtonClicked: () -> Unit = {}
+        onButtonClicked: () -> Unit = {},
     ) {
         Column {
             DatePickerTimeline(
@@ -71,6 +71,35 @@ internal class DatePickerTimelineTests : BaseTest() {
 
             performClickOnNodeWithTag(testTag = "button")
             verifyDateIsDisplayed(date = "20/06/2020")
+        }
+    }
+
+    @Test
+    fun verifyTodayScrollsToTodayAfterFlingingAway() {
+        setContent {
+            TestDatePickerContent(
+                state = rememberDatePickerState(
+                    initialDate = LocalDate.now()
+                )
+            )
+        }
+
+        datePickerTimeLineRobot {
+            val today = dateFormatter.format(LocalDate.now())
+            // Given today's date
+            verifyDateIsDisplayed(date = today)
+
+            // And I swipe right on the calendar three times
+            performSwipeRightOnNodeWithTag(testTag = "datepickertimeline", times = 2)
+
+            // Verify that the original date goes out of view
+            verifyDateIsNotDisplayed(date = today)
+
+            // And when I click on the 'Today' text
+            performClickOnNodeWithText(text = "Today")
+
+            // Verify that today's date comes into view
+            verifyDateIsDisplayed(date = today)
         }
     }
 
