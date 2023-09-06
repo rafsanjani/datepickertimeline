@@ -89,7 +89,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.23.1")
     androidTestImplementation("org.assertj:assertj-core:3.23.1")
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.godaddy.android.colorpicker:compose-color-picker-android:0.6.0")
     implementation("com.google.android.material:material:1.8.0")
