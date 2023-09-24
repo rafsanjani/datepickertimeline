@@ -3,7 +3,7 @@ plugins {
     id("kotlin-android")
 }
 
-val composeBOM = "2023.08.00"
+val composeBOM = "2023.09.01"
 
 android {
     compileSdk = 34
