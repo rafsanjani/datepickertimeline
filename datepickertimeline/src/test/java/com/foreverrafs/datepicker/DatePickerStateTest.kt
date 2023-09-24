@@ -1,30 +1,27 @@
 package com.foreverrafs.datepicker
 
 import com.foreverrafs.datepicker.state.DatePickerState
+import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.time.LocalDate
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
 class DatePickerStateTest {
     @Test
-    fun testInitialDateIsEqualToSelectedDate() {
+    fun `test initial date is equal to selected date`() {
         val selectedDate = LocalDate.of(2021, 12, 12)
         val state = DatePickerState(
-            selectedDate = selectedDate, shouldScrollToSelectedDate = true
+            selectedDate = selectedDate,
+            shouldScrollToSelectedDate = true
         )
 
         assertThat(state.initialDate).isEqualTo(selectedDate)
     }
 
     @Test
-    fun testScrollingFlagResetsAfterScrolling() {
+    fun `test scrolling flag resets after scrolling`() {
         val state = DatePickerState(
-            selectedDate = LocalDate.now(), shouldScrollToSelectedDate = true
+            selectedDate = LocalDate.now(),
+            shouldScrollToSelectedDate = true
         )
 
         state.onScrollCompleted()
@@ -33,10 +30,11 @@ class DatePickerStateTest {
     }
 
     @Test
-    fun testScrollingActuallyOccursDuringSmoothScrolling() {
+    fun `test scrolling actually occurs during smooth scrolling`() {
         val originalDate = LocalDate.of(2021, 12, 12)
         val state = DatePickerState(
-            selectedDate = originalDate, shouldScrollToSelectedDate = false
+            selectedDate = originalDate,
+            shouldScrollToSelectedDate = false
         )
 
         val newDate = LocalDate.of(2021, 5, 5)
