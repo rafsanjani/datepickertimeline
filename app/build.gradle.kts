@@ -11,7 +11,7 @@ android {
         applicationId = "com.foreverrafs.datepickertimeline"
         minSdk = 26
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.7.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -58,7 +58,7 @@ android {
     packaging {
         resources {
             excludes += listOf(
-                "/META-INF/{AL2.0,LGPL2.1}",
+                "/META-INF/{AL2.0,LGPL2.1}"
             )
         }
     }
