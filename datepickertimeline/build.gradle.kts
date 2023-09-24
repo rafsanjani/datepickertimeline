@@ -3,10 +3,10 @@ plugins {
     id("kotlin-android")
 }
 
-val composeBOM = "2023.01.00"
+val composeBOM = "2023.08.00"
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 26
@@ -23,13 +23,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.2"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     buildFeatures {
@@ -37,18 +37,19 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     namespace = "com.foreverrafs.datepicker"
 }
+
 apply {
     from("../scripts/publish.gradle")
 }
 
 dependencies {
     implementation(platform("androidx.compose:compose-bom:$composeBOM"))
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
-    implementation("androidx.core:core-ktx:1.9.0")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+    implementation("androidx.core:core-ktx:1.12.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -66,14 +67,15 @@ dependencies {
     // Material design icons
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
-    testImplementation("org.assertj:assertj-core:3.23.1")
+    testImplementation("org.assertj:assertj-core:3.24.2")
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    testImplementation("org.assertj:assertj-core:3.23.1")
-    androidTestImplementation("org.assertj:assertj-core:3.23.1")
+    androidTestImplementation("org.assertj:assertj-core:3.24.2")
 
     // Snapper
-    implementation("dev.chrisbanes.snapper:snapper:0.3.0")
+    implementation("dev.chrisbanes.snapper:snapper:0.3.0") {
+        because("This one works better than Google's version")
+    }
 }
