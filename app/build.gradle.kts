@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
-val composeBOM = "2023.08.00"
+val composeBOM = "2023.09.01"
 
 android {
     compileSdk = 34
@@ -92,7 +92,7 @@ dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.godaddy.android.colorpicker:compose-color-picker-android:0.6.0")
+    implementation("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material:material")
