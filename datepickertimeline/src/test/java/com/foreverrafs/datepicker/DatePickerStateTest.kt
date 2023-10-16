@@ -1,9 +1,9 @@
 package com.foreverrafs.datepicker
 
 import com.foreverrafs.datepicker.state.DatePickerState
-import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
+import java.time.LocalDate
 
 class DatePickerStateTest {
     @Test
@@ -11,7 +11,7 @@ class DatePickerStateTest {
         val selectedDate = LocalDate.of(2021, 12, 12)
         val state = DatePickerState(
             selectedDate = selectedDate,
-            shouldScrollToSelectedDate = true
+            shouldScrollToSelectedDate = true,
         )
 
         assertThat(state.initialDate).isEqualTo(selectedDate)
@@ -21,7 +21,7 @@ class DatePickerStateTest {
     fun `test scrolling flag resets after scrolling`() {
         val state = DatePickerState(
             selectedDate = LocalDate.now(),
-            shouldScrollToSelectedDate = true
+            shouldScrollToSelectedDate = true,
         )
 
         state.onScrollCompleted()
@@ -34,7 +34,7 @@ class DatePickerStateTest {
         val originalDate = LocalDate.of(2021, 12, 12)
         val state = DatePickerState(
             selectedDate = originalDate,
-            shouldScrollToSelectedDate = false
+            shouldScrollToSelectedDate = false,
         )
 
         val newDate = LocalDate.of(2021, 5, 5)
