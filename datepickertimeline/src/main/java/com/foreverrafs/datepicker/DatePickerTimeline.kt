@@ -111,7 +111,10 @@ fun DatePickerTimeline(
                 }
 
                 val firstItemIfLeft = fullyVisibleItemsInfo.firstOrNull()
-                if (firstItemIfLeft != null && firstItemIfLeft.offset < layoutInfo.viewportStartOffset) {
+
+                if (firstItemIfLeft != null &&
+                    firstItemIfLeft.offset < layoutInfo.viewportStartOffset
+                ) {
                     fullyVisibleItemsInfo.removeFirst()
                 }
 
@@ -126,7 +129,7 @@ fun DatePickerTimeline(
     }
 
     // scroll to the selected date when it changes
-    LaunchedEffect(state.initialDate) {
+    LaunchedEffect(state.shouldScrollToSelectedDate) {
         // Scroll position should at least be 0
         val scrollPosition = (selectedDateIndex - span / 2).coerceAtLeast(0)
 

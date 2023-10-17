@@ -63,14 +63,18 @@ fun App() {
             Column(
                 modifier = Modifier
                     .padding(8.dp)
-                    .fillMaxSize()
+                    .fillMaxSize(),
             ) {
                 val datePickerState =
                     rememberDatePickerState(initialDate = LocalDate.of(2021, 5, 12))
 
                 var mainBackgroundColor by remember { mutableStateOf(Purple500) }
-                var selectedDateBackgroundColor by remember { mutableStateOf(Color.Black.copy(alpha = 0.35f)) }
-                var eventIndicatorColor by remember { mutableStateOf(Color.Black.copy(alpha = 0.35f)) }
+                var selectedDateBackgroundColor by remember {
+                    mutableStateOf(Color.Black.copy(alpha = 0.35f))
+                }
+                var eventIndicatorColor by remember {
+                    mutableStateOf(Color.Black.copy(alpha = 0.35f))
+                }
                 var dateTextColor by remember { mutableStateOf(Color.White) }
                 val today = LocalDate.now()
 
@@ -94,7 +98,7 @@ fun App() {
                             modifier = Modifier.padding(10.dp),
                             text = "Today",
                             color = Color.White,
-                            style = MaterialTheme.typography.h6
+                            style = MaterialTheme.typography.h6,
                         )
                     },
                     pastDaysCount = 1,
@@ -109,30 +113,31 @@ fun App() {
                     RadioButtonWithText(
                         text = "Main Background",
                         selected = selected == Radio.MainBackground,
-                        onClick = { selected = Radio.MainBackground }
+                        onClick = { selected = Radio.MainBackground },
                     )
 
                     RadioButtonWithText(
                         text = "Selected date background",
                         selected = selected == Radio.SelectedDateBackground,
-                        onClick = { selected = Radio.SelectedDateBackground }
+                        onClick = { selected = Radio.SelectedDateBackground },
                     )
 
                     RadioButtonWithText(
                         text = "Date text color",
                         selected = selected == Radio.DateTextColor,
-                        onClick = { selected = Radio.DateTextColor }
+                        onClick = { selected = Radio.DateTextColor },
                     )
 
                     RadioButtonWithText(
                         text = "Event Indicator color",
                         selected = selected == Radio.EventIndicatorColor,
-                        onClick = { selected = Radio.EventIndicatorColor }
+                        onClick = { selected = Radio.EventIndicatorColor },
                     )
 
                     ClassicColorPicker(
                         modifier = Modifier.height(250.dp),
-                        color = HsvColor.from(color = mainBackgroundColor), onColorChanged = { color: HsvColor ->
+                        color = HsvColor.from(color = mainBackgroundColor),
+                        onColorChanged = { color: HsvColor ->
                             when (selected) {
                                 Radio.MainBackground -> mainBackgroundColor = color.toColor()
                                 Radio.SelectedDateBackground ->
@@ -146,7 +151,7 @@ fun App() {
                                 Radio.EventIndicatorColor ->
                                     eventIndicatorColor = color.toColor()
                             }
-                        }
+                        },
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -159,7 +164,7 @@ fun App() {
                             .clip(RoundedCornerShape(8.dp)),
                         onClick = {
                             datePickerState.smoothScrollToDate(
-                                LocalDate.now().plusDays(Random.nextLong(until = 50))
+                                LocalDate.now().plusDays(Random.nextLong(until = 50)),
                             )
                         },
                     ) {
@@ -171,7 +176,7 @@ fun App() {
                         textAlign = TextAlign.Center,
                         text = DateTimeFormatter.ofPattern("MMMM dd, yyyy")
                             .format(datePickerState.initialDate),
-                        style = MaterialTheme.typography.h6
+                        style = MaterialTheme.typography.h6,
                     )
                 }
             }
@@ -183,7 +188,7 @@ enum class Radio {
     MainBackground,
     SelectedDateBackground,
     DateTextColor,
-    EventIndicatorColor
+    EventIndicatorColor,
 }
 
 @Composable
@@ -195,7 +200,7 @@ fun RadioButtonWithText(text: String, selected: Boolean, onClick: () -> Unit) {
                 onClick()
             },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(text = text, textAlign = TextAlign.Center)
         RadioButton(selected = selected, onClick = onClick)

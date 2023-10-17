@@ -49,21 +49,21 @@ internal open class BaseRobot(private val rule: ComposeTestRule) {
     // Assertions
     fun verifyNodeWithTextIsDisplayed(
         text: String,
-        ignoreCase: Boolean = true,
+        ignoreCase: Boolean = true
     ) {
         rule.onNodeWithText(text = text, ignoreCase = ignoreCase)
             .assertIsDisplayed()
     }
 
     fun verifyNodeWithTagIsDisplayed(
-        testTag: String,
+        testTag: String
     ) {
         rule.onNodeWithTag(testTag = testTag)
             .assertIsDisplayed()
     }
 
     fun verifyNodeWithTagIsNotDisplayed(
-        testTag: String,
+        testTag: String
     ) {
         rule.onNodeWithTag(testTag = testTag)
             .assertDoesNotExist()
@@ -71,7 +71,7 @@ internal open class BaseRobot(private val rule: ComposeTestRule) {
 
     fun verifyNodeWithTextIsNotDisplayed(
         text: String,
-        ignoreCase: Boolean = true,
+        ignoreCase: Boolean = true
     ) {
         rule.onNodeWithText(text = text, ignoreCase = ignoreCase)
             .assertExists()

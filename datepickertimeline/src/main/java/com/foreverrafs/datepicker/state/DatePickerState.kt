@@ -12,7 +12,7 @@ import java.time.LocalDate
 
 class DatePickerState(
     selectedDate: LocalDate,
-    shouldScrollToSelectedDate: Boolean = true,
+    shouldScrollToSelectedDate: Boolean = true
 ) {
     private var _initialDate by mutableStateOf(selectedDate, structuralEqualityPolicy())
     private var _shouldScrollToSelectedDate by mutableStateOf(
@@ -61,7 +61,7 @@ class DatePickerState(
                     selectedDate = LocalDate.of(
                         it[0].toString().toInt(), // year
                         it[1].toString().toInt(), // month
-                        it[2].toString().toInt(), // day
+                        it[2].toString().toInt() // day
                     ),
 
                     shouldScrollToSelectedDate = it[3].toString()
