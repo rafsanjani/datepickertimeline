@@ -175,7 +175,7 @@ fun App() {
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         text = DateTimeFormatter.ofPattern("MMMM dd, yyyy")
-                            .format(datePickerState.initialDate),
+                            .format(datePickerState.selectedDate),
                         style = MaterialTheme.typography.h6,
                     )
                 }

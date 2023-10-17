@@ -77,14 +77,14 @@ fun DatePickerTimeline(
 ) {
     // The first date shown on the calendar
     val startDate by remember {
-        mutableStateOf(state.initialDate.minusDays(pastDaysCount.toLong()))
+        mutableStateOf(state.selectedDate.minusDays(pastDaysCount.toLong()))
     }
 
     val currentEventDates by rememberUpdatedState(newValue = eventDates)
 
     var totalWindowWidth by remember { mutableIntStateOf(1) }
 
-    val selectedDateIndex = DAYS.between(startDate, state.initialDate).toInt()
+    val selectedDateIndex = DAYS.between(startDate, state.selectedDate).toInt()
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -237,7 +237,7 @@ fun DatePickerTimeline(
                             }
                         },
                         date = date,
-                        isSelected = date == state.initialDate,
+                        isSelected = date == state.selectedDate,
                         onDateSelected = {
                             onDateSelected(it)
                             state.smoothScrollToDate(it)

@@ -14,7 +14,7 @@ class DatePickerStateTest {
             shouldScrollToSelectedDate = true,
         )
 
-        assertThat(state.initialDate).isEqualTo(selectedDate)
+        assertThat(state.selectedDate).isEqualTo(selectedDate)
     }
 
     @Test
@@ -41,6 +41,6 @@ class DatePickerStateTest {
         state.smoothScrollToDate(date = newDate)
 
         assertThat(state.shouldScrollToSelectedDate).isEqualTo(true)
-        assertThat(state.initialDate).isEqualTo(newDate)
+        assertThat(state.selectedDate).isEqualTo(newDate)
     }
 }
