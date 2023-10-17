@@ -17,7 +17,6 @@ class DatePickerState(
     private var _initialDate by mutableStateOf(selectedDate, structuralEqualityPolicy())
     private var _shouldScrollToSelectedDate by mutableStateOf(
         shouldScrollToSelectedDate,
-        structuralEqualityPolicy()
     )
 
     internal fun onScrollCompleted() {
@@ -27,7 +26,7 @@ class DatePickerState(
     val shouldScrollToSelectedDate: Boolean
         get() = _shouldScrollToSelectedDate
 
-    val initialDate: LocalDate
+    val selectedDate: LocalDate
         get() = _initialDate
 
     fun smoothScrollToDate(date: LocalDate) {
@@ -50,10 +49,10 @@ class DatePickerState(
         val Saver: Saver<DatePickerState, *> = listSaver(
             save = {
                 listOf(
-                    it.initialDate.year,
-                    it.initialDate.monthValue,
-                    it.initialDate.dayOfMonth,
-                    it.shouldScrollToSelectedDate.toString()
+                    it.selectedDate.year,
+                    it.selectedDate.monthValue,
+                    it.selectedDate.dayOfMonth,
+                    it.shouldScrollToSelectedDate.toString(),
                 )
             },
             restore = {
@@ -65,9 +64,9 @@ class DatePickerState(
                     ),
 
                     shouldScrollToSelectedDate = it[3].toString()
-                        .toBoolean() // shouldScrollToSelectedDate
+                        .toBoolean(), // shouldScrollToSelectedDate
                 )
-            }
+            },
         )
     }
 }

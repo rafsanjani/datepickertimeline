@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -76,19 +77,19 @@ fun DatePickerTimeline(
 ) {
     // The first date shown on the calendar
     val startDate by remember {
-        mutableStateOf(state.initialDate.minusDays(pastDaysCount.toLong()))
+        mutableStateOf(state.selectedDate.minusDays(pastDaysCount.toLong()))
     }
 
     val currentEventDates by rememberUpdatedState(newValue = eventDates)
 
-    var totalWindowWidth by remember { mutableStateOf(1) }
+    var totalWindowWidth by remember { mutableIntStateOf(1) }
 
-    val selectedDateIndex = DAYS.between(startDate, state.initialDate).toInt()
+    val selectedDateIndex = DAYS.between(startDate, state.selectedDate).toInt()
 
     val coroutineScope = rememberCoroutineScope()
 
     // placeholder for how many items a row/column can occupy. Actual value gets calculated after placement
-    var span by remember { mutableStateOf(0) }
+    var span by remember { mutableIntStateOf(0) }
 
     val listState = rememberLazyListState()
 
@@ -110,7 +111,10 @@ fun DatePickerTimeline(
                 }
 
                 val firstItemIfLeft = fullyVisibleItemsInfo.firstOrNull()
-                if (firstItemIfLeft != null && firstItemIfLeft.offset < layoutInfo.viewportStartOffset) {
+
+                if (firstItemIfLeft != null &&
+                    firstItemIfLeft.offset < layoutInfo.viewportStartOffset
+                ) {
                     fullyVisibleItemsInfo.removeFirst()
                 }
 
@@ -125,7 +129,7 @@ fun DatePickerTimeline(
     }
 
     // scroll to the selected date when it changes
-    LaunchedEffect(state.initialDate) {
+    LaunchedEffect(state.shouldScrollToSelectedDate) {
         // Scroll position should at least be 0
         val scrollPosition = (selectedDateIndex - span / 2).coerceAtLeast(0)
 
@@ -136,7 +140,7 @@ fun DatePickerTimeline(
                 listState.scrollToItem(scrollPosition)
             } else if (!isSelectedDateVisible) {
                 listState.animateScrollToItem(
-                    scrollPosition
+                    scrollPosition,
                 )
             }
 
@@ -160,7 +164,7 @@ fun DatePickerTimeline(
             } else {
                 it.size.height
             }
-        }
+        },
     ) {
         Column(
             modifier = Modifier
@@ -169,16 +173,16 @@ fun DatePickerTimeline(
                         Modifier.fillMaxHeight()
                     } else {
                         Modifier.fillMaxWidth()
-                    }
+                    },
                 )
                 .background(brush = backgroundBrush)
-                .padding(4.dp)
+                .padding(4.dp),
         ) {
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .clip(
-                        RoundedCornerShape(12.dp)
+                        RoundedCornerShape(12.dp),
                     )
                     .clickable {
                         coroutineScope.launch {
@@ -186,7 +190,7 @@ fun DatePickerTimeline(
                         }
                     }
                     .wrapContentSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 todayLabel()
             }
@@ -205,7 +209,7 @@ fun DatePickerTimeline(
             }
             val lastVisibleItemIndex = (firstVisibleItemIndex + visibleItemsCount - 1)
                 .coerceAtLeast(
-                    0
+                    0,
                 )
 
             LaunchedEffect(key1 = firstVisibleItemIndex, key2 = lastVisibleItemIndex) {
@@ -218,7 +222,7 @@ fun DatePickerTimeline(
             DatePickerLayout(
                 orientation = orientation,
                 listState = listState,
-                hasEvent = hasEvent
+                hasEvent = hasEvent,
             ) {
                 items(Integer.MAX_VALUE) { position ->
                     val date = startDate.plusDays(position.toLong())
@@ -233,7 +237,7 @@ fun DatePickerTimeline(
                             }
                         },
                         date = date,
-                        isSelected = date == state.initialDate,
+                        isSelected = date == state.selectedDate,
                         onDateSelected = {
                             onDateSelected(it)
                             state.smoothScrollToDate(it)
@@ -242,7 +246,7 @@ fun DatePickerTimeline(
                         selectedTextColor = selectedTextColor,
                         dateTextColor = dateTextColor,
                         isEventDate = isEventDate,
-                        eventIndicatorColor = eventIndicatorColor
+                        eventIndicatorColor = eventIndicatorColor,
                     )
                 }
             }
@@ -268,7 +272,7 @@ private fun DatePickerLayout(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 state = listState,
                 content = content,
-                flingBehavior = flingBehavior
+                flingBehavior = flingBehavior,
             )
         }
 
@@ -281,7 +285,7 @@ private fun DatePickerLayout(
                     .height(if (hasEvent) combinedSize else CALENDAR_DATE_ITEM_SIZE),
                 state = listState,
                 content = content,
-                flingBehavior = flingBehavior
+                flingBehavior = flingBehavior,
 
             )
         }
@@ -316,7 +320,7 @@ fun DatePickerTimeline(
         onDateSelected = onDateSelected,
         selectedTextColor = selectedTextColor,
         dateTextColor = dateTextColor,
-        todayLabel = todayLabel
+        todayLabel = todayLabel,
     )
 }
 
@@ -338,31 +342,31 @@ private fun DateCard(
         modifier = modifier
             .testTag(tag = dateFormatter.format(date))
             .clip(
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(16.dp),
             )
             .then(
                 if (isSelected) {
                     Modifier.background(
                         brush = selectedBackgroundBrush,
-                        alpha = 0.65f
+                        alpha = 0.65f,
                     )
                 } else {
                     Modifier
-                }
+                },
             )
             .padding(vertical = 4.dp)
             .clickable {
                 onDateSelected(date)
             }
             .padding(vertical = 2.dp, horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         val textColor = if (isSelected) selectedTextColor else dateTextColor
 
         // Month
         Text(
             text = date.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).uppercase(),
-            color = textColor
+            color = textColor,
         )
 
         // Day of month
@@ -370,13 +374,13 @@ private fun DateCard(
             text = date.dayOfMonth.toString(),
             fontWeight = FontWeight.ExtraBold,
             fontSize = 24.sp,
-            color = textColor
+            color = textColor,
         )
 
         // Day of week
         Text(
             text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).uppercase(),
-            color = textColor
+            color = textColor,
         )
 
         if (isEventDate) {
@@ -385,9 +389,9 @@ private fun DateCard(
                     .padding(2.dp)
                     .background(
                         color = eventIndicatorColor,
-                        shape = CircleShape
+                        shape = CircleShape,
                     )
-                    .size(8.dp)
+                    .size(8.dp),
             )
         }
     }
@@ -395,5 +399,5 @@ private fun DateCard(
 
 enum class Orientation {
     Vertical,
-    Horizontal
+    Horizontal,
 }

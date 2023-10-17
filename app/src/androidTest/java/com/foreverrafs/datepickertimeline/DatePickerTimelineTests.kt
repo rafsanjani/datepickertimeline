@@ -35,13 +35,13 @@ internal class DatePickerTimelineTests : BaseTest() {
                 pastDaysCount = pastDaysCount,
                 todayLabel = {
                     Text(text = "Today")
-                }
+                },
             )
 
             // With a button to manipulate the date
             Button(
                 modifier = Modifier.testTag("button"),
-                onClick = onButtonClicked
+                onClick = onButtonClicked,
             ) {
                 Text(text = "Click")
             }
@@ -60,7 +60,7 @@ internal class DatePickerTimelineTests : BaseTest() {
                 TestDatePickerContent(state = state, onButtonClicked = {
                     // Move to 20th June, 2020
                     state.smoothScrollToDate(
-                        LocalDate.of(2020, 6, 20)
+                        LocalDate.of(2020, 6, 20),
                     )
                 })
             }
@@ -79,8 +79,8 @@ internal class DatePickerTimelineTests : BaseTest() {
         setContent {
             TestDatePickerContent(
                 state = rememberDatePickerState(
-                    initialDate = LocalDate.now()
-                )
+                    initialDate = LocalDate.now(),
+                ),
             )
         }
 
@@ -111,9 +111,9 @@ internal class DatePickerTimelineTests : BaseTest() {
                     initialDate = LocalDate.of(
                         2021,
                         5,
-                        12
-                    )
-                )
+                        12,
+                    ),
+                ),
             )
         }
 
