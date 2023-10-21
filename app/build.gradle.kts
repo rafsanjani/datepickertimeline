@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
-val composeBOM = "2023.09.01"
+val composeBOM = "2023.10.01"
 
 android {
     compileSdk = 34
@@ -86,7 +86,7 @@ dependencies {
     implementation(project(mapOf("path" to ":datepickertimeline")))
 
     // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.3")
     testImplementation("org.assertj:assertj-core:3.24.2")
     androidTestImplementation("org.assertj:assertj-core:3.24.2")
 
