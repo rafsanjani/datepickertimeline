@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
-val composeBOM = "2023.09.01"
+val composeBOM = "2023.10.01"
 
 android {
     compileSdk = 34
