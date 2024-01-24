@@ -67,12 +67,12 @@ dependencies {
     // Material design icons
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.material:material-icons-extended")
-    testImplementation("org.assertj:assertj-core:3.24.2")
+    testImplementation("org.assertj:assertj-core:3.25.2")
 
     // UI Tests
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 
-    androidTestImplementation("org.assertj:assertj-core:3.24.2")
+    androidTestImplementation("org.assertj:assertj-core:3.25.2")
 
     // Snapper
     implementation("dev.chrisbanes.snapper:snapper:0.3.0") {
