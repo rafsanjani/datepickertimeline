@@ -71,38 +71,34 @@ android {
 }
 
 dependencies {
+    implementation(projects.datepickertimeline)
+    implementation(platform(libs.compose.bom))
 
-    implementation(platform("androidx.compose:compose-bom:$composeBOM"))
+    // Tooling support (Previews, etc.)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.ui.tooling.data)
 
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation("androidx.compose.foundation:foundation")
+    implementation(libs.compose.foundation.foundation)
+    implementation(libs.compose.foundation.layout)
 
     // Material Design
-    implementation("androidx.compose.material:material")
+    implementation(libs.compose.material.material2)
 
     // Material design icons
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation(project(mapOf("path" to ":datepickertimeline")))
+    implementation(libs.compose.material.iconsextended)
+    testImplementation(libs.assertJ)
 
     // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.4")
-    testImplementation("org.assertj:assertj-core:3.24.2")
-    androidTestImplementation("org.assertj:assertj-core:3.24.2")
+    androidTestImplementation(libs.compose.ui.test.unit)
+    androidTestImplementation(libs.compose.ui.test.junit)
 
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
-    implementation("com.google.android.material:material:1.10.0")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material:material")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.1")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    implementation(libs.google.material)
+    implementation(libs.compose.ui.ui)
+    coreLibraryDesugaring(libs.desugaring)
+    implementation(libs.compose.material.material2)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.activity.compose)
 }

@@ -3,8 +3,6 @@ plugins {
     id("kotlin-android")
 }
 
-val composeBOM = "2023.10.01"
-
 android {
     compileSdk = 34
 
@@ -47,35 +45,29 @@ apply {
 }
 
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:$composeBOM"))
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-    implementation("androidx.core:core-ktx:1.12.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("androidx.compose.ui:ui")
+    implementation(platform(libs.compose.bom))
+    coreLibraryDesugaring(libs.desugaring)
+    implementation(libs.androidx.core)
+    testImplementation(libs.junit)
+    implementation(libs.compose.ui.ui)
 
     // Tooling support (Previews, etc.)
-    implementation("androidx.compose.ui:ui-tooling")
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.ui.tooling.data)
 
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation("androidx.compose.foundation:foundation")
+    implementation(libs.compose.foundation.foundation)
+    implementation(libs.compose.foundation.layout)
 
     // Material Design
-    implementation("androidx.compose.material:material")
+    implementation(libs.compose.material.material2)
 
     // Material design icons
-    implementation("androidx.compose.material:material-icons-core")
-    implementation("androidx.compose.material:material-icons-extended")
-    testImplementation("org.assertj:assertj-core:3.24.2")
-
-    // UI Tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-
-    androidTestImplementation("org.assertj:assertj-core:3.24.2")
+    implementation(libs.compose.material.iconsextended)
+    testImplementation(libs.assertJ)
 
     // Snapper
-    implementation("dev.chrisbanes.snapper:snapper:0.3.0") {
+    implementation(libs.snapper) {
         because("This one works better than Google's version")
     }
 }

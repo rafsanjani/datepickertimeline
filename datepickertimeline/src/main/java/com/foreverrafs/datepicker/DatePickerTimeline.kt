@@ -59,7 +59,6 @@ private val EVENT_INDICATOR_SIZE = 8.dp
 private val CALENDAR_DATE_ITEM_SIZE = 100.dp
 
 @Suppress("LongMethod")
-@ExperimentalComposeUiApi
 @Composable
 fun DatePickerTimeline(
     modifier: Modifier = Modifier,
@@ -107,7 +106,7 @@ fun DatePickerTimeline(
                 val viewportHeight = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
 
                 if (lastItem.offset + lastItem.size > viewportHeight) {
-                    fullyVisibleItemsInfo.removeLast()
+                    fullyVisibleItemsInfo.removeAt(fullyVisibleItemsInfo.lastIndex)
                 }
 
                 val firstItemIfLeft = fullyVisibleItemsInfo.firstOrNull()
@@ -115,7 +114,7 @@ fun DatePickerTimeline(
                 if (firstItemIfLeft != null &&
                     firstItemIfLeft.offset < layoutInfo.viewportStartOffset
                 ) {
-                    fullyVisibleItemsInfo.removeFirst()
+                    fullyVisibleItemsInfo.removeAt(0)
                 }
 
                 fullyVisibleItemsInfo.map { it.index }
@@ -287,7 +286,7 @@ private fun DatePickerLayout(
                 content = content,
                 flingBehavior = flingBehavior,
 
-            )
+                )
         }
     }
 }
