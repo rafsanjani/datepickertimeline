@@ -95,6 +95,7 @@ dependencies {
     androidTestImplementation(libs.compose.ui.test.junit)
 
     implementation("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
+    debugImplementation(libs.compose.ui.test.manifest)
     implementation(libs.google.material)
     implementation(libs.compose.ui.ui)
     coreLibraryDesugaring(libs.desugaring)
