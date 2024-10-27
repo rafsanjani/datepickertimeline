@@ -9,20 +9,22 @@ class DatePickerStateTest {
     @Test
     fun `test initial date is equal to selected date`() {
         val selectedDate = LocalDate.of(2021, 12, 12)
-        val state = DatePickerState(
-            selectedDate = selectedDate,
-            shouldScrollToSelectedDate = true,
-        )
+        val state =
+            DatePickerState(
+                selectedDate = selectedDate,
+                shouldScrollToSelectedDate = true,
+            )
 
         assertThat(state.selectedDate).isEqualTo(selectedDate)
     }
 
     @Test
     fun `test scrolling flag resets after scrolling`() {
-        val state = DatePickerState(
-            selectedDate = LocalDate.now(),
-            shouldScrollToSelectedDate = true,
-        )
+        val state =
+            DatePickerState(
+                selectedDate = LocalDate.now(),
+                shouldScrollToSelectedDate = true,
+            )
 
         state.onScrollCompleted()
 
@@ -32,10 +34,11 @@ class DatePickerStateTest {
     @Test
     fun `test scrolling actually occurs during smooth scrolling`() {
         val originalDate = LocalDate.of(2021, 12, 12)
-        val state = DatePickerState(
-            selectedDate = originalDate,
-            shouldScrollToSelectedDate = false,
-        )
+        val state =
+            DatePickerState(
+                selectedDate = originalDate,
+                shouldScrollToSelectedDate = false,
+            )
 
         val newDate = LocalDate.of(2021, 5, 5)
         state.smoothScrollToDate(date = newDate)

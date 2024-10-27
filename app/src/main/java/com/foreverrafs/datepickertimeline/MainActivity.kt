@@ -57,11 +57,13 @@ fun App() {
     DatepickertimelineTheme {
         // A surface container using the 'background' color from the theme
         Surface(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize(),
         ) {
             Column(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .padding(8.dp)
                     .fillMaxSize(),
             ) {
@@ -87,7 +89,8 @@ fun App() {
                     selectedBackgroundColor = selectedDateBackgroundColor,
                     selectedTextColor = Color.White,
                     dateTextColor = dateTextColor,
-                    eventDates = listOf(
+                    eventDates =
+                    listOf(
                         today.plusDays(1),
                         today.plusDays(3),
                         today.plusDays(5),
@@ -157,7 +160,8 @@ fun App() {
                     Spacer(modifier = Modifier.weight(1f))
 
                     Button(
-                        modifier = Modifier
+                        modifier =
+                        Modifier
                             .align(alignment = Alignment.CenterHorizontally)
                             .padding(10.dp)
                             .height(48.dp)
@@ -174,7 +178,9 @@ fun App() {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        text = DateTimeFormatter.ofPattern("MMMM dd, yyyy")
+                        text =
+                        DateTimeFormatter
+                            .ofPattern("MMMM dd, yyyy")
                             .format(datePickerState.selectedDate),
                         style = MaterialTheme.typography.h6,
                     )
@@ -192,7 +198,11 @@ enum class Radio {
 }
 
 @Composable
-fun RadioButtonWithText(text: String, selected: Boolean, onClick: () -> Unit) {
+fun RadioButtonWithText(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

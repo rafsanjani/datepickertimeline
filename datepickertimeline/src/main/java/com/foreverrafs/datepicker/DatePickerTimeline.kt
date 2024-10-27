@@ -157,38 +157,39 @@ fun DatePickerTimeline(
 
     Surface(
         elevation = 6.dp,
-        modifier = modifier.onPlaced {
-            totalWindowWidth = if (orientation == Orientation.Horizontal) {
-                it.size.width
-            } else {
-                it.size.height
-            }
+        modifier =
+        modifier.onPlaced {
+            totalWindowWidth =
+                if (orientation == Orientation.Horizontal) {
+                    it.size.width
+                } else {
+                    it.size.height
+                }
         },
     ) {
         Column(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .then(
                     if (orientation == Orientation.Vertical) {
                         Modifier.fillMaxHeight()
                     } else {
                         Modifier.fillMaxWidth()
                     },
-                )
-                .background(brush = backgroundBrush)
+                ).background(brush = backgroundBrush)
                 .padding(4.dp),
         ) {
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .align(Alignment.CenterHorizontally)
                     .clip(
                         RoundedCornerShape(12.dp),
-                    )
-                    .clickable {
+                    ).clickable {
                         coroutineScope.launch {
                             state.smoothScrollToDate(LocalDate.now())
                         }
-                    }
-                    .wrapContentSize(),
+                    }.wrapContentSize(),
                 contentAlignment = Alignment.Center,
             ) {
                 todayLabel()
@@ -196,9 +197,10 @@ fun DatePickerTimeline(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            val hasEvent = remember {
-                eventDates.isNotEmpty()
-            }
+            val hasEvent =
+                remember {
+                    eventDates.isNotEmpty()
+                }
 
             val visibleItemsCount by remember {
                 derivedStateOf { listState.layoutInfo.visibleItemsInfo.size }
@@ -206,10 +208,11 @@ fun DatePickerTimeline(
             val firstVisibleItemIndex by remember {
                 derivedStateOf { listState.firstVisibleItemIndex }
             }
-            val lastVisibleItemIndex = (firstVisibleItemIndex + visibleItemsCount - 1)
-                .coerceAtLeast(
-                    0,
-                )
+            val lastVisibleItemIndex =
+                (firstVisibleItemIndex + visibleItemsCount - 1)
+                    .coerceAtLeast(
+                        0,
+                    )
 
             LaunchedEffect(key1 = firstVisibleItemIndex, key2 = lastVisibleItemIndex) {
                 val firstVisibleDate = startDate.plusDays(firstVisibleItemIndex.toLong())
@@ -228,12 +231,14 @@ fun DatePickerTimeline(
                     val isEventDate = currentEventDates.contains(date)
 
                     DateCard(
-                        modifier = Modifier.onPlaced {
-                            span = totalWindowWidth / if (orientation == Orientation.Horizontal) {
-                                it.size.width
-                            } else {
-                                it.size.height
-                            }
+                        modifier =
+                        Modifier.onPlaced {
+                            span = totalWindowWidth /
+                                if (orientation == Orientation.Horizontal) {
+                                    it.size.width
+                                } else {
+                                    it.size.height
+                                }
                         },
                         date = date,
                         isSelected = date == state.selectedDate,
@@ -279,14 +284,14 @@ private fun DatePickerLayout(
             val combinedSize = CALENDAR_DATE_ITEM_SIZE + EVENT_INDICATOR_SIZE
 
             LazyRow(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .testTag(tag = testTag)
                     .height(if (hasEvent) combinedSize else CALENDAR_DATE_ITEM_SIZE),
                 state = listState,
                 content = content,
                 flingBehavior = flingBehavior,
-
-                )
+            )
         }
     }
 }
@@ -338,12 +343,12 @@ private fun DateCard(
     dateTextColor: Color = MaterialTheme.colors.onSurface,
 ) {
     Column(
-        modifier = modifier
+        modifier =
+        modifier
             .testTag(tag = dateFormatter.format(date))
             .clip(
                 shape = RoundedCornerShape(16.dp),
-            )
-            .then(
+            ).then(
                 if (isSelected) {
                     Modifier.background(
                         brush = selectedBackgroundBrush,
@@ -352,12 +357,10 @@ private fun DateCard(
                 } else {
                     Modifier
                 },
-            )
-            .padding(vertical = 4.dp)
+            ).padding(vertical = 4.dp)
             .clickable {
                 onDateSelected(date)
-            }
-            .padding(vertical = 2.dp, horizontal = 16.dp),
+            }.padding(vertical = 2.dp, horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         val textColor = if (isSelected) selectedTextColor else dateTextColor
@@ -384,13 +387,13 @@ private fun DateCard(
 
         if (isEventDate) {
             Box(
-                modifier = Modifier
+                modifier =
+                Modifier
                     .padding(2.dp)
                     .background(
                         color = eventIndicatorColor,
                         shape = CircleShape,
-                    )
-                    .size(8.dp),
+                    ).size(8.dp),
             )
         }
     }

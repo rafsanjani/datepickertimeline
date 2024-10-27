@@ -107,8 +107,10 @@ internal class DatePickerTimelineTests : BaseTest() {
     fun verifyClickingOnTodayTextScrollsToToday() {
         setContent {
             TestDatePickerContent(
-                state = rememberDatePickerState(
-                    initialDate = LocalDate.of(
+                state =
+                rememberDatePickerState(
+                    initialDate =
+                    LocalDate.of(
                         2021,
                         5,
                         12,

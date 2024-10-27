@@ -14,7 +14,7 @@ class DatePickerState(
     selectedDate: LocalDate,
     shouldScrollToSelectedDate: Boolean = true,
 ) {
-    private var _initialDate by mutableStateOf(selectedDate, structuralEqualityPolicy())
+    private var _selectedDate by mutableStateOf(selectedDate, structuralEqualityPolicy())
     private var _shouldScrollToSelectedDate by mutableStateOf(
         shouldScrollToSelectedDate,
     )
@@ -27,14 +27,17 @@ class DatePickerState(
         get() = _shouldScrollToSelectedDate
 
     val selectedDate: LocalDate
-        get() = _initialDate
+        get() = _selectedDate
 
     fun smoothScrollToDate(date: LocalDate) {
         _shouldScrollToSelectedDate = true
-        _initialDate = date
+        _selectedDate = date
     }
 
-    fun setVisibleDates(firstDate: LocalDate?, lastDate: LocalDate?) {
+    fun setVisibleDates(
+        firstDate: LocalDate?,
+        lastDate: LocalDate?,
+    ) {
         _firstVisibleDate = firstDate
         _lastVisibleDate = lastDate
     }
@@ -46,31 +49,32 @@ class DatePickerState(
     val lastVisibleDate get() = _lastVisibleDate
 
     companion object {
-        val Saver: Saver<DatePickerState, *> = listSaver(
-            save = {
-                listOf(
-                    it.selectedDate.year,
-                    it.selectedDate.monthValue,
-                    it.selectedDate.dayOfMonth,
-                    it.shouldScrollToSelectedDate.toString(),
-                )
-            },
-            restore = {
-                DatePickerState(
-                    selectedDate = LocalDate.of(
-                        it[0].toString().toInt(), // year
-                        it[1].toString().toInt(), // month
-                        it[2].toString().toInt(), // day
-                    ),
-
-                    shouldScrollToSelectedDate = it[3].toString()
-                        .toBoolean(), // shouldScrollToSelectedDate
-                )
-            },
-        )
+        val Saver: Saver<DatePickerState, *> =
+            listSaver(
+                save = {
+                    listOf(
+                        it.selectedDate.year,
+                        it.selectedDate.monthValue,
+                        it.selectedDate.dayOfMonth,
+                        it.shouldScrollToSelectedDate.toString(),
+                    )
+                },
+                restore = {
+                    DatePickerState(
+                        selectedDate = LocalDate.of(
+                            it[0].toString().toInt(), // year
+                            it[1].toString().toInt(), // month
+                            it[2].toString().toInt(), // day
+                        ),
+                        shouldScrollToSelectedDate = it[3]
+                            .toString()
+                            .toBoolean(),
+                        // shouldScrollToSelectedDate
+                    )
+                },
+            )
     }
 }
 
 @Composable
-fun rememberDatePickerState(initialDate: LocalDate = LocalDate.now()) =
-    rememberSaveable(saver = DatePickerState.Saver) { DatePickerState(initialDate) }
+fun rememberDatePickerState(initialDate: LocalDate = LocalDate.now()) = rememberSaveable(saver = DatePickerState.Saver) { DatePickerState(initialDate) }

@@ -11,23 +11,31 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
 import androidx.compose.ui.test.swipeRight
 
-internal open class BaseRobot(private val rule: ComposeTestRule) {
+internal open class BaseRobot(
+    private val rule: ComposeTestRule,
+) {
     // Actions
     fun performClickOnNodeWithText(text: String) {
-        rule.onNodeWithText(text = text, ignoreCase = true)
+        rule
+            .onNodeWithText(text = text, ignoreCase = true)
             .assertExists(errorMessageOnFail = "View with text: $text does not exist")
             .assertHasClickAction()
             .performClick()
     }
 
     fun performClickOnNodeWithTag(testTag: String) {
-        rule.onNodeWithTag(testTag = testTag)
+        rule
+            .onNodeWithTag(testTag = testTag)
             .assertExists()
             .performClick()
     }
 
-    fun performSwipeRightOnNodeWithTag(testTag: String, times: Int = 1) {
-        rule.onNodeWithTag(testTag = testTag)
+    fun performSwipeRightOnNodeWithTag(
+        testTag: String,
+        times: Int = 1,
+    ) {
+        rule
+            .onNodeWithTag(testTag = testTag)
             .assertExists()
             .performTouchInput {
                 repeat(times) {
@@ -36,8 +44,12 @@ internal open class BaseRobot(private val rule: ComposeTestRule) {
             }
     }
 
-    fun performSwipeLeftOnNodeWithTag(testTag: String, times: Int = 1) {
-        rule.onNodeWithTag(testTag = testTag)
+    fun performSwipeLeftOnNodeWithTag(
+        testTag: String,
+        times: Int = 1,
+    ) {
+        rule
+            .onNodeWithTag(testTag = testTag)
             .assertExists()
             .performTouchInput {
                 repeat(times) {
@@ -49,31 +61,31 @@ internal open class BaseRobot(private val rule: ComposeTestRule) {
     // Assertions
     fun verifyNodeWithTextIsDisplayed(
         text: String,
-        ignoreCase: Boolean = true
+        ignoreCase: Boolean = true,
     ) {
-        rule.onNodeWithText(text = text, ignoreCase = ignoreCase)
+        rule
+            .onNodeWithText(text = text, ignoreCase = ignoreCase)
             .assertIsDisplayed()
     }
 
-    fun verifyNodeWithTagIsDisplayed(
-        testTag: String
-    ) {
-        rule.onNodeWithTag(testTag = testTag)
+    fun verifyNodeWithTagIsDisplayed(testTag: String) {
+        rule
+            .onNodeWithTag(testTag = testTag)
             .assertIsDisplayed()
     }
 
-    fun verifyNodeWithTagIsNotDisplayed(
-        testTag: String
-    ) {
-        rule.onNodeWithTag(testTag = testTag)
+    fun verifyNodeWithTagIsNotDisplayed(testTag: String) {
+        rule
+            .onNodeWithTag(testTag = testTag)
             .assertDoesNotExist()
     }
 
     fun verifyNodeWithTextIsNotDisplayed(
         text: String,
-        ignoreCase: Boolean = true
+        ignoreCase: Boolean = true,
     ) {
-        rule.onNodeWithText(text = text, ignoreCase = ignoreCase)
+        rule
+            .onNodeWithText(text = text, ignoreCase = ignoreCase)
             .assertExists()
             .assertIsNotDisplayed()
     }
