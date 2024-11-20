@@ -1,3 +1,5 @@
+@file:OptIn(FormatStringsInDatetimeFormats::class)
+
 package com.foreverrafs.datepickertimeline
 
 import android.os.Bundle
@@ -38,8 +40,14 @@ import com.foreverrafs.datepickertimeline.ui.theme.DatepickertimelineTheme
 import com.foreverrafs.datepickertimeline.ui.theme.Purple500
 import com.godaddy.android.colorpicker.ClassicColorPicker
 import com.godaddy.android.colorpicker.HsvColor
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
+import kotlinx.datetime.plus
+import kotlinx.datetime.todayIn
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -68,7 +76,7 @@ fun App() {
                     .fillMaxSize(),
             ) {
                 val datePickerState =
-                    rememberDatePickerState(initialDate = LocalDate.of(2021, 5, 12))
+                    rememberDatePickerState(initialDate = kotlinx.datetime.LocalDate(2021, 5, 12))
 
                 var mainBackgroundColor by remember { mutableStateOf(Purple500) }
                 var selectedDateBackgroundColor by remember {
@@ -78,7 +86,7 @@ fun App() {
                     mutableStateOf(Color.Black.copy(alpha = 0.35f))
                 }
                 var dateTextColor by remember { mutableStateOf(Color.White) }
-                val today = LocalDate.now()
+                val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
 
                 DatePickerTimeline(
                     modifier = Modifier.wrapContentSize(),
@@ -91,10 +99,10 @@ fun App() {
                     dateTextColor = dateTextColor,
                     eventDates =
                     listOf(
-                        today.plusDays(1),
-                        today.plusDays(3),
-                        today.plusDays(5),
-                        today.plusDays(8),
+                        today.plus(1, DateTimeUnit.DAY),
+                        today.plus(3, DateTimeUnit.DAY),
+                        today.plus(5, DateTimeUnit.DAY),
+                        today.plus(8, DateTimeUnit.DAY),
                     ),
                     todayLabel = {
                         Text(
@@ -168,7 +176,7 @@ fun App() {
                             .clip(RoundedCornerShape(8.dp)),
                         onClick = {
                             datePickerState.smoothScrollToDate(
-                                LocalDate.now().plusDays(Random.nextLong(until = 50)),
+                                today.plus(Random.nextLong(until = 50), DateTimeUnit.DAY),
                             )
                         },
                     ) {
@@ -178,10 +186,9 @@ fun App() {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        text =
-                        DateTimeFormatter
-                            .ofPattern("MMMM dd, yyyy")
-                            .format(datePickerState.selectedDate),
+                        text = LocalDate.Format {
+                            byUnicodePattern("MM dd, yyyy")
+                        }.format(datePickerState.selectedDate),
                         style = MaterialTheme.typography.h6,
                     )
                 }

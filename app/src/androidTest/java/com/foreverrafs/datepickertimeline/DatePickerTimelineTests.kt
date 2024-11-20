@@ -9,17 +9,26 @@ import androidx.compose.ui.platform.testTag
 import com.foreverrafs.datepicker.DatePickerTimeline
 import com.foreverrafs.datepicker.state.DatePickerState
 import com.foreverrafs.datepicker.state.rememberDatePickerState
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
+import kotlinx.datetime.minus
+import kotlinx.datetime.todayIn
 import org.junit.Test
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 /**
  * Instrumented test, which will execute on an Android device.
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+@OptIn(FormatStringsInDatetimeFormats::class)
 internal class DatePickerTimelineTests : BaseTest() {
-    private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    private val dateFormatter = LocalDate.Format {
+        byUnicodePattern("dd/MM/yyyy")
+    }
 
     @Composable
     fun TestDatePickerContent(
@@ -51,7 +60,7 @@ internal class DatePickerTimelineTests : BaseTest() {
     @Test
     fun verifyTimeLineAppearsCorrectly() {
         var state: DatePickerState?
-        val initialDate = LocalDate.of(2020, 5, 12)
+        val initialDate = LocalDate(2020, 5, 12)
 
         setContent {
             state = rememberDatePickerState(initialDate)
@@ -60,7 +69,7 @@ internal class DatePickerTimelineTests : BaseTest() {
                 TestDatePickerContent(state = state, onButtonClicked = {
                     // Move to 20th June, 2020
                     state.smoothScrollToDate(
-                        LocalDate.of(2020, 6, 20),
+                        LocalDate(2020, 6, 20),
                     )
                 })
             }
@@ -79,13 +88,13 @@ internal class DatePickerTimelineTests : BaseTest() {
         setContent {
             TestDatePickerContent(
                 state = rememberDatePickerState(
-                    initialDate = LocalDate.now(),
+                    initialDate = Clock.System.todayIn(TimeZone.UTC),
                 ),
             )
         }
 
         datePickerTimeLineRobot {
-            val today = dateFormatter.format(LocalDate.now())
+            val today = dateFormatter.format(Clock.System.todayIn(TimeZone.UTC))
             // Given today's date
             verifyDateIsDisplayed(date = today)
 
@@ -110,7 +119,7 @@ internal class DatePickerTimelineTests : BaseTest() {
                 state =
                 rememberDatePickerState(
                     initialDate =
-                    LocalDate.of(
+                    LocalDate(
                         2021,
                         5,
                         12,
@@ -133,7 +142,11 @@ internal class DatePickerTimelineTests : BaseTest() {
             performClickOnNodeWithText(text = "Today")
 
             // Verify that today's date comes into view
-            verifyDateIsDisplayed(date = dateFormatter.format(LocalDate.now()))
+            verifyDateIsDisplayed(
+                date = dateFormatter.format(
+                    Clock.System.todayIn(TimeZone.UTC),
+                ),
+            )
         }
     }
 
@@ -142,13 +155,13 @@ internal class DatePickerTimelineTests : BaseTest() {
         var state: DatePickerState? = null
 
         setContent {
-            state = rememberDatePickerState(initialDate = LocalDate.of(2021, 12, 12))
+            state = rememberDatePickerState(initialDate = LocalDate(2021, 12, 12))
 
             TestDatePickerContent(state = state!!, pastDaysCount = 180)
         }
         datePickerTimeLineRobot {
             // Programmatically change state to another date
-            state?.smoothScrollToDate(LocalDate.of(2022, 5, 12))
+            state?.smoothScrollToDate(LocalDate(2022, 5, 12))
             verifyDateIsDisplayed(date = "12/05/2022")
         }
     }
@@ -156,7 +169,7 @@ internal class DatePickerTimelineTests : BaseTest() {
     @Test
     fun verifyInvalidPastDateSelectsFirstDate() {
         var state: DatePickerState? = null
-        val initialDate = LocalDate.of(2021, 12, 12)
+        val initialDate = LocalDate(2021, 12, 12)
         val pastDaysCount = 10
 
         setContent {
@@ -167,9 +180,9 @@ internal class DatePickerTimelineTests : BaseTest() {
 
         datePickerTimeLineRobot {
             // Scroll to an invalid date
-            state?.smoothScrollToDate(LocalDate.of(2017, 1, 1))
+            state?.smoothScrollToDate(LocalDate(2017, 1, 1))
 
-            val requiredDate = initialDate.minusDays(pastDaysCount.toLong())
+            val requiredDate = initialDate.minus(pastDaysCount.toLong(), DateTimeUnit.DAY)
 
             verifyDateIsDisplayed(date = dateFormatter.format(requiredDate))
         }
