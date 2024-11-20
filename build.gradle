@@ -5,10 +5,11 @@ buildscript {
 }
 
 plugins {
-    id("com.android.application").version('8.1.3') apply false
-    id 'com.android.library' version '8.1.3' apply false
-    id("org.jetbrains.kotlin.android").version('1.9.10') apply false
-    id("io.gitlab.arturbosch.detekt").version("1.23.3") apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.detekt) apply false
+    alias(libs.plugins.compose.compiler) apply false
 }
 
 //apply git hooks
@@ -20,7 +21,7 @@ subprojects {
 
 
 afterEvaluate {
-    tasks.named("clean"){
+    tasks.named("clean") {
         dependsOn(installGitHooks)
     }
 }

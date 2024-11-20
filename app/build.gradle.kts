@@ -1,15 +1,16 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.compose.compiler)
 }
-val composeBOM = "2023.10.01"
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.foreverrafs.datepickertimeline"
         minSdk = 26
+        targetSdk = 35
         versionCode = 1
         versionName = "0.7.1"
 
@@ -51,9 +52,6 @@ android {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
-    }
 
     packaging {
         resources {
