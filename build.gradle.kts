@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath "org.jlleitschuh.gradle:ktlint-gradle:12.1.1"
+        classpath("org.jlleitschuh.gradle:ktlint-gradle:12.1.1")
     }
 }
 
@@ -11,22 +11,21 @@ plugins {
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.ktlint)
 }
 
-//apply git hooks
-apply from: "scripts/git-hooks.gradle.kts"
-
-subprojects {
-    apply from: "../scripts/ktlint.gradle"
+apply {
+    from("scripts/git-hooks.gradle.kts")
 }
 
+ktlint {
+    version = "1.4.0"
+}
 
 afterEvaluate {
-    tasks.named("clean") {
-        dependsOn(installGitHooks)
-    }
+    tasks.getByName("clean").dependsOn("installGitHooks")
 }
 
-tasks.register('clean', Delete) {
-    delete rootProject.buildDir
+tasks.register<Delete>("clean") {
+    delete(rootProject.buildDir)
 }
