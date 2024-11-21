@@ -1,70 +1,63 @@
+@file:Suppress("UnusedPrivateProperty")
+
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.compose.multiplatform)
+    alias(libs.plugins.compose.compiler)
 }
 
-android {
-    compileSdk = 35
+@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
+kotlin {
+    androidTarget()
 
-    defaultConfig {
-        minSdk = 26
+    iosX64()
+    jvm()
+    iosArm64()
+    iosSimulatorArm64()
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
-    buildTypes {
-        buildTypes {
-            getByName("release") {
-                isMinifyEnabled = false
-                proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation(compose.runtime)
+                implementation(compose.ui)
+                implementation(compose.material)
+                implementation(libs.kotlin.datetime)
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlin.datetime)
+                implementation(libs.touchlab.stately)
+                implementation(libs.koin.core)
+                implementation(libs.kotlin.inject.runtime)
+                implementation(libs.kotlinx.coroutines.test)
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.junit)
+                implementation(libs.koin.test)
+                implementation(libs.kotlinx.coroutines.test)
+                implementation(libs.turbine)
+                implementation(libs.assertk.common)
             }
         }
     }
+}
+
+android {
+    namespace = "com.foreverrafs.datepickertimeline"
+    compileSdk = libs.versions.compileSdk.get().toInt()
+
+    defaultConfig {
+        minSdk = libs.versions.minimumSdk.get().toInt()
+    }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-        isCoreLibraryDesugaringEnabled = true
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-    namespace = "com.foreverrafs.datepicker"
-}
-
-apply {
-    from("../scripts/publish.gradle")
-}
-
-dependencies {
-    implementation(platform(libs.compose.bom))
-    coreLibraryDesugaring(libs.desugaring)
-    implementation(libs.androidx.core)
-    testImplementation(libs.junit)
-    implementation(libs.compose.ui.ui)
-
-    // Tooling support (Previews, etc.)
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.ui.tooling.data)
-
-    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation(libs.compose.foundation.foundation)
-    implementation(libs.compose.foundation.layout)
-
-    // Material Design
-    implementation(libs.compose.material.material2)
-
-    // Material design icons
-    implementation(libs.compose.material.iconsextended)
-    testImplementation(libs.assertJ)
-
-    // Snapper
-    implementation(libs.snapper) {
-        because("This one works better than Google's version")
+        sourceCompatibility = JavaVersion.VERSION_17
     }
 }

@@ -1,14 +1,18 @@
 package com.foreverrafs.datepicker
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import com.foreverrafs.datepicker.state.DatePickerState
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
-import java.time.LocalDate
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
+import kotlin.test.Test
 
 class DatePickerStateTest {
     @Test
     fun `test initial date is equal to selected date`() {
-        val selectedDate = LocalDate.of(2021, 12, 12)
+        val selectedDate = LocalDate(2021, 12, 12)
         val state =
             DatePickerState(
                 selectedDate = selectedDate,
@@ -22,7 +26,7 @@ class DatePickerStateTest {
     fun `test scrolling flag resets after scrolling`() {
         val state =
             DatePickerState(
-                selectedDate = LocalDate.now(),
+                selectedDate = Clock.System.todayIn(TimeZone.currentSystemDefault()),
                 shouldScrollToSelectedDate = true,
             )
 
@@ -33,14 +37,14 @@ class DatePickerStateTest {
 
     @Test
     fun `test scrolling actually occurs during smooth scrolling`() {
-        val originalDate = LocalDate.of(2021, 12, 12)
+        val originalDate = LocalDate(2021, 12, 12)
         val state =
             DatePickerState(
                 selectedDate = originalDate,
                 shouldScrollToSelectedDate = false,
             )
 
-        val newDate = LocalDate.of(2021, 5, 5)
+        val newDate = LocalDate(2021, 5, 5)
         state.smoothScrollToDate(date = newDate)
 
         assertThat(state.shouldScrollToSelectedDate).isEqualTo(true)

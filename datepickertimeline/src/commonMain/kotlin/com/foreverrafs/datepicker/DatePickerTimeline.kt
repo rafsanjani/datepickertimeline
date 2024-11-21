@@ -2,6 +2,7 @@ package com.foreverrafs.datepicker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -46,14 +47,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.foreverrafs.datepicker.state.DatePickerState
 import com.foreverrafs.datepicker.state.rememberDatePickerState
-import dev.chrisbanes.snapper.ExperimentalSnapperApi
-import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
-import java.time.temporal.ChronoUnit.DAYS
-import java.util.Locale
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.daysUntil
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 
 private val EVENT_INDICATOR_SIZE = 8.dp
 private val CALENDAR_DATE_ITEM_SIZE = 100.dp
@@ -62,7 +66,9 @@ private val CALENDAR_DATE_ITEM_SIZE = 100.dp
 @Composable
 fun DatePickerTimeline(
     modifier: Modifier = Modifier,
-    state: DatePickerState = rememberDatePickerState(LocalDate.now()),
+    state: DatePickerState = rememberDatePickerState(
+        Clock.System.now().toLocalDateTime(TimeZone.UTC).date,
+    ),
     backgroundBrush: Brush,
     selectedBackgroundBrush: Brush,
     eventIndicatorColor: Color = MaterialTheme.colors.primaryVariant,
@@ -76,14 +82,16 @@ fun DatePickerTimeline(
 ) {
     // The first date shown on the calendar
     val startDate by remember {
-        mutableStateOf(state.selectedDate.minusDays(pastDaysCount.toLong()))
+        mutableStateOf(
+            state.selectedDate.minus(pastDaysCount.toLong(), DateTimeUnit.DAY),
+        )
     }
 
     val currentEventDates by rememberUpdatedState(newValue = eventDates)
 
     var totalWindowWidth by remember { mutableIntStateOf(1) }
 
-    val selectedDateIndex = DAYS.between(startDate, state.selectedDate).toInt()
+    val selectedDateIndex = startDate.daysUntil(state.selectedDate)
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -149,7 +157,7 @@ fun DatePickerTimeline(
     }
 
     LaunchedEffect(Unit) {
-        listState.scrollToItem(selectedDateIndex)
+        println(selectedDateIndex)
 
         state.onScrollCompleted()
         isInitialComposition = false
@@ -187,7 +195,9 @@ fun DatePickerTimeline(
                         RoundedCornerShape(12.dp),
                     ).clickable {
                         coroutineScope.launch {
-                            state.smoothScrollToDate(LocalDate.now())
+                            state.smoothScrollToDate(
+                                Clock.System.now().toLocalDateTime(TimeZone.UTC).date,
+                            )
                         }
                     }.wrapContentSize(),
                 contentAlignment = Alignment.Center,
@@ -215,8 +225,13 @@ fun DatePickerTimeline(
                     )
 
             LaunchedEffect(key1 = firstVisibleItemIndex, key2 = lastVisibleItemIndex) {
-                val firstVisibleDate = startDate.plusDays(firstVisibleItemIndex.toLong())
-                val lastVisibleDate = startDate.plusDays(lastVisibleItemIndex.toLong())
+                val firstVisibleDate =
+                    startDate.plus(
+                        value = firstVisibleItemIndex.toLong(),
+                        unit = DateTimeUnit.DAY,
+                    )
+                val lastVisibleDate =
+                    startDate.plus(lastVisibleItemIndex.toLong(), DateTimeUnit.DAY)
 
                 state.setVisibleDates(firstVisibleDate, lastVisibleDate)
             }
@@ -226,8 +241,8 @@ fun DatePickerTimeline(
                 listState = listState,
                 hasEvent = hasEvent,
             ) {
-                items(Integer.MAX_VALUE) { position ->
-                    val date = startDate.plusDays(position.toLong())
+                items(Int.MAX_VALUE) { position ->
+                    val date = startDate.plus(position.toLong(), DateTimeUnit.DAY)
                     val isEventDate = currentEventDates.contains(date)
 
                     DateCard(
@@ -258,7 +273,6 @@ fun DatePickerTimeline(
     }
 }
 
-@OptIn(ExperimentalSnapperApi::class)
 @Composable
 private fun DatePickerLayout(
     orientation: Orientation,
@@ -266,7 +280,6 @@ private fun DatePickerLayout(
     hasEvent: Boolean,
     content: LazyListScope.() -> Unit,
 ) {
-    val flingBehavior = rememberSnapperFlingBehavior(listState)
     val testTag = "datepickertimeline"
 
     when (orientation) {
@@ -276,7 +289,7 @@ private fun DatePickerLayout(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 state = listState,
                 content = content,
-                flingBehavior = flingBehavior,
+                flingBehavior = rememberSnapFlingBehavior(listState),
             )
         }
 
@@ -290,7 +303,7 @@ private fun DatePickerLayout(
                     .height(if (hasEvent) combinedSize else CALENDAR_DATE_ITEM_SIZE),
                 state = listState,
                 content = content,
-                flingBehavior = flingBehavior,
+                flingBehavior = rememberSnapFlingBehavior(listState),
             )
         }
     }
@@ -328,7 +341,10 @@ fun DatePickerTimeline(
     )
 }
 
-private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+@OptIn(FormatStringsInDatetimeFormats::class)
+private val dateFormatter = LocalDate.Format {
+    byUnicodePattern("dd/MM/yyyy")
+}
 
 @Composable
 private fun DateCard(
@@ -367,7 +383,7 @@ private fun DateCard(
 
         // Month
         Text(
-            text = date.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).uppercase(),
+            text = date.month.name.take(3),
             color = textColor,
         )
 
@@ -381,7 +397,7 @@ private fun DateCard(
 
         // Day of week
         Text(
-            text = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH).uppercase(),
+            text = date.dayOfWeek.name.take(3),
             color = textColor,
         )
 

@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.foreverrafs.datepickertimeline"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 35
         versionCode = 1
         versionName = "0.7.1"
@@ -22,11 +22,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
-        }
-
-        getByName("debug") {
-            isMinifyEnabled = false
-            isDebuggable = true
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -51,7 +47,6 @@ android {
     buildFeatures {
         compose = true
     }
-
 
     packaging {
         resources {
@@ -91,6 +86,7 @@ dependencies {
     // UI Tests
     androidTestImplementation(libs.compose.ui.test.unit)
     androidTestImplementation(libs.compose.ui.test.junit)
+    implementation(libs.kotlin.datetime)
 
     implementation("com.godaddy.android.colorpicker:compose-color-picker-android:0.7.0")
     debugImplementation(libs.compose.ui.test.manifest)

@@ -8,7 +8,11 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.structuralEqualityPolicy
-import java.time.LocalDate
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
+import kotlinx.datetime.toLocalDateTime
 
 class DatePickerState(
     selectedDate: LocalDate,
@@ -54,14 +58,14 @@ class DatePickerState(
                 save = {
                     listOf(
                         it.selectedDate.year,
-                        it.selectedDate.monthValue,
+                        it.selectedDate.month.number,
                         it.selectedDate.dayOfMonth,
                         it.shouldScrollToSelectedDate.toString(),
                     )
                 },
                 restore = {
                     DatePickerState(
-                        selectedDate = LocalDate.of(
+                        selectedDate = LocalDate(
                             it[0].toString().toInt(), // year
                             it[1].toString().toInt(), // month
                             it[2].toString().toInt(), // day
@@ -77,4 +81,6 @@ class DatePickerState(
 }
 
 @Composable
-fun rememberDatePickerState(initialDate: LocalDate = LocalDate.now()) = rememberSaveable(saver = DatePickerState.Saver) { DatePickerState(initialDate) }
+fun rememberDatePickerState(
+    initialDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.UTC).date,
+) = rememberSaveable(saver = DatePickerState.Saver) { DatePickerState(initialDate) }
