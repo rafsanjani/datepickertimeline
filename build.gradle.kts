@@ -1,9 +1,3 @@
-buildscript {
-    dependencies {
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:12.1.1")
-    }
-}
-
 plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.android.application) apply false
@@ -18,6 +12,10 @@ apply {
     from("scripts/git-hooks.gradle.kts")
 }
 
+subprojects {
+    pluginManager.apply("org.jlleitschuh.gradle.ktlint")
+}
+
 ktlint {
     version = "1.4.0"
 }
@@ -27,5 +25,5 @@ afterEvaluate {
 }
 
 tasks.register<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(rootProject.layout.buildDirectory.get())
 }
