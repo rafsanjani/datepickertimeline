@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  Build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +27,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-  automation:
+  Automation:
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -76,4 +76,4 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradlew app:connectedCheck
+          script: ./gradlew app:connectedCheck && killall -INT crashpad_handler || true
