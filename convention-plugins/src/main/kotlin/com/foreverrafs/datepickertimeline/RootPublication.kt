@@ -20,7 +20,7 @@ class RootPublication : Plugin<Project> {
     }
 
     private fun getLibraryVersion(): String {
-        val nextReleaseVersion = "3.0.0"
+        val nextReleaseVersion = "3.0.1"
         val currentBranch = getCurrentBranch()
 
         // develop branch is for snapshots whilst main is for releases
