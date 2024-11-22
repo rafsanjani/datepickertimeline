@@ -24,11 +24,14 @@ class RootPublication : Plugin<Project> {
         val currentBranch = getCurrentBranch()
 
         // develop branch is for snapshots whilst main is for releases
-        return if (currentBranch == "develop") {
+        val version = if (currentBranch == "develop") {
             "$nextReleaseVersion-SNAPSHOT"
         } else {
             nextReleaseVersion
         }
+
+        println("Publishing version: $version")
+        return version
     }
 
     override fun apply(target: Project) {
