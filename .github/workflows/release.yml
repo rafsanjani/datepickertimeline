@@ -23,14 +23,16 @@ jobs:
           java-version: '17'
       - name: Configure GPG Key
         run: |
-          mkdir ~/.gpgkey
-          echo $GPG_KEY > ~/.gpgkey/secring.gpg.b64
-          base64 -d ~/.gpgkey/secring.gpg.b64 > ~/.gpgkey/secring.gpg
+          mkdir ~/.gnupk
+          echo $GPG_KEY > ~/.gnupg/secring.gpg.b64
+          base64 -d ~/.gpgkey/secring.gpg.b64 > ~/.gnupg/secring.gpg
 
       - name: Deploy to Sonatype
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          MAVEN_SIGNING_KEY_ID: ${{secrets.GPG_KEY_ID}}
+          MAVEN_SIGNING_KEY_PASSWORD: ${{secrets.GPG_KEY_PASSWORD}}
 
         run: |
-          ./gradlew publishToSonatype closeAndReleaseStagingRepository --no-parallel --no-daemon -Psigning.keyId=${{secrets.GPG_KEY_ID}} -Psigning.password=${{secrets.GPG_KEY_PASSWORD}} -Psigning.secretKeyRingFile=$(echo ~/.gpgkey/secring.gpg)
+          ./gradlew publishToSonatype closeAndReleaseStagingRepository --no-parallel --no-daemon -Psigning.keyId=$MAVEN_SIGNING_KEY_ID -Psigning.password=$MAVEN_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=$(echo ~/.gnupg/secring.gpg)

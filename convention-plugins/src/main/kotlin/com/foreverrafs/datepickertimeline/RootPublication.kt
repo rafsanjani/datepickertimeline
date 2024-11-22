@@ -10,17 +10,25 @@ class RootPublication : Plugin<Project> {
         with(target) {
             pluginManager.apply("io.github.gradle-nexus.publish-plugin")
 
+            target.allprojects {
+                group = "io.github.rafsanjani"
+                version = "1.2.2-SNAPSHOT"
+            }
+
             nexusPublishing {
                 repositories {
                     sonatype {
-                        val stagingProfileID = System.getenv("OSSRH_STAGING_PROFILE_ID")
                         val mavenCentralUsername = System.getenv("MAVEN_CENTRAL_USERNAME")
                         val mavenCentralPassword = System.getenv("MAVEN_CENTRAL_PASSWORD")
 
-                        useStaging.set(true)
+                        nexusUrl.set(
+                            if (version.toString().endsWith("SNAPSHOT")) {
+                                uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+                            } else {
+                                uri("https://s01.oss.sonatype.org/service/local/")
+                            },
+                        )
 
-                        snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-                        nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
                         username.set(mavenCentralUsername)
                         password.set(mavenCentralPassword)
                     }

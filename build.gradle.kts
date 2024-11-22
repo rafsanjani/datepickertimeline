@@ -21,5 +21,3 @@ subprojects {
 ktlint {
     version = "1.4.0"
 }
-
-group = "io.github.rafsanjani"
