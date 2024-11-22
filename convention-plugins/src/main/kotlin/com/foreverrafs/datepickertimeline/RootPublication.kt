@@ -30,16 +30,18 @@ class RootPublication : Plugin<Project> {
             nextReleaseVersion
         }
 
-        println("Publishing version: $version")
+        println("Publishing version: $version from $currentBranch")
         return version
     }
 
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply("io.github.gradle-nexus.publish-plugin")
+            val libraryVersion = getLibraryVersion()
+
             allprojects {
                 group = "io.github.rafsanjani"
-                version = getLibraryVersion()
+                version = libraryVersion
             }
 
             nexusPublishing {
