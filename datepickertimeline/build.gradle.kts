@@ -1,11 +1,17 @@
 @file:Suppress("UnusedPrivateProperty")
 
 plugins {
+    id("module.publication")
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
+    id("org.jetbrains.dokka") version "1.9.20"
+    `maven-publish`
+    signing
 }
+
+version = "1.0.0"
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
@@ -56,8 +62,27 @@ android {
         minSdk = libs.versions.minimumSdk.get().toInt()
     }
 
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
+
     compileOptions {
         targetCompatibility = JavaVersion.VERSION_17
         sourceCompatibility = JavaVersion.VERSION_17
+    }
+
+    afterEvaluate {
+        configure<PublishingExtension> {
+            publications.all {
+                val mavenPublication = this as? MavenPublication
+
+                mavenPublication?.artifactId =
+                    "datepickertimeline${
+                        "-$name".takeUnless { "kotlinMultiplatform" in name }.orEmpty()
+                    }".removeSuffix("Release")
+            }
+        }
     }
 }
