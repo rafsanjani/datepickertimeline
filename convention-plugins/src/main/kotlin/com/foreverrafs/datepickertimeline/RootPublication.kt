@@ -15,7 +15,7 @@ class RootPublication : Plugin<Project> {
         )
         val process = ProcessBuilder(command).start()
 
-        val output = process.inputStream.bufferedReader().use { it.readText() }
+        val output = process.inputStream.bufferedReader().use { it.readText() }.trim()
         return output
     }
 
