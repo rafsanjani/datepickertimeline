@@ -6,13 +6,37 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
 class RootPublication : Plugin<Project> {
+    private fun getCurrentBranch(): String {
+        val command = listOf(
+            "git",
+            "rev-parse",
+            "--abbrev-ref",
+            "HEAD",
+        )
+        val process = ProcessBuilder(command).start()
+
+        val output = process.inputStream.bufferedReader().use { it.readText() }
+        return output
+    }
+
+    private fun getLibraryVersion(): String {
+        val nextReleaseVersion = "3.0.0"
+        val currentBranch = getCurrentBranch()
+
+        // develop branch is for snapshots whilst main is for releases
+        return if (currentBranch == "develop") {
+            "$nextReleaseVersion-SNAPSHOT"
+        } else {
+            nextReleaseVersion
+        }
+    }
+
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply("io.github.gradle-nexus.publish-plugin")
-
-            target.allprojects {
+            allprojects {
                 group = "io.github.rafsanjani"
-                version = "1.2.2-SNAPSHOT"
+                version = getLibraryVersion()
             }
 
             nexusPublishing {
@@ -21,13 +45,8 @@ class RootPublication : Plugin<Project> {
                         val mavenCentralUsername = System.getenv("MAVEN_CENTRAL_USERNAME")
                         val mavenCentralPassword = System.getenv("MAVEN_CENTRAL_PASSWORD")
 
-                        nexusUrl.set(
-                            if (version.toString().endsWith("SNAPSHOT")) {
-                                uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                            } else {
-                                uri("https://s01.oss.sonatype.org/service/local/")
-                            },
-                        )
+                        snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+                        nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
 
                         username.set(mavenCentralUsername)
                         password.set(mavenCentralPassword)

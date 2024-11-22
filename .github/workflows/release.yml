@@ -2,9 +2,6 @@ name: Publish to Maven Central
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - '*'
 
 jobs:
   deploy:
