@@ -66,14 +66,16 @@ class DatePickerState(
                 restore = {
                     DatePickerState(
                         selectedDate = LocalDate(
-                            it[0].toString().toInt(), // year
-                            it[1].toString().toInt(), // month
-                            it[2].toString().toInt(), // day
+                            // year
+                            it[0].toString().toInt(),
+                            // month
+                            it[1].toString().toInt(),
+                            // day
+                            it[2].toString().toInt(),
                         ),
                         shouldScrollToSelectedDate = it[3]
                             .toString()
                             .toBoolean(),
-                        // shouldScrollToSelectedDate
                     )
                 },
             )

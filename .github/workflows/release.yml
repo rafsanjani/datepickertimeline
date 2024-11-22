@@ -1,0 +1,36 @@
+name: Publish to Maven Central
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GPG_KEY: ${{ secrets.GPG_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - name: Configure GPG Key
+        run: |
+          mkdir ~/.gpgkey
+          echo $GPG_KEY > ~/.gpgkey/secring.gpg.b64
+          base64 -d ~/.gpgkey/secring.gpg.b64 > ~/.gpgkey/secring.gpg
+
+      - name: Deploy to Sonatype
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+
+        run: |
+          ./gradlew publishToSonatype closeAndReleaseStagingRepository --no-parallel --no-daemon -Psigning.keyId=${{secrets.GPG_KEY_ID}} -Psigning.password=${{secrets.GPG_KEY_PASSWORD}} -Psigning.secretKeyRingFile=$(echo ~/.gpgkey/secring.gpg)
