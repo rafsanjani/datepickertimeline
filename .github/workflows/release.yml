@@ -23,9 +23,9 @@ jobs:
           java-version: '17'
       - name: Configure GPG Key
         run: |
-          mkdir ~/.gnupk
+          mkdir ~/.gnupg
           echo $GPG_KEY > ~/.gnupg/secring.gpg.b64
-          base64 -d ~/.gpgkey/secring.gpg.b64 > ~/.gnupg/secring.gpg
+          base64 -d ~/.gnupg/secring.gpg.b64 > ~/.gnupg/secring.gpg
 
       - name: Deploy to Sonatype
         env:
