@@ -23,7 +23,7 @@ class ModulePublication : Plugin<Project> {
             applyPlugins()
             val dokkaOutputDir = layout.buildDirectory.dir("dokka").get().asFile
 
-            val deleteDokkaOutputDir = tasks.register<Delete>("deleteDokkaOutputDirectory") {
+            val deleteDokkaOutputDir by tasks.register<Delete>("deleteDokkaOutputDirectory") {
                 delete(dokkaOutputDir)
             }
 
@@ -34,16 +34,8 @@ class ModulePublication : Plugin<Project> {
             }
 
             publishing {
-                // Configure all publications
                 publications.withType<MavenPublication> {
-                    val mavenPublication = this as? MavenPublication
-
                     artifact(javadocJar)
-
-                    mavenPublication?.artifactId =
-                        "datepickertimeline${
-                            "-$name".takeUnless { "kotlinMultiplatform" in name }.orEmpty()
-                        }".removeSuffix("Release")
 
                     pom {
                         name.set("Datepicker Timeline")
@@ -81,6 +73,19 @@ class ModulePublication : Plugin<Project> {
 
             tasks.withType(AbstractPublishToMaven::class.java).configureEach {
                 dependsOn(tasks.withType(Sign::class.java))
+            }
+
+            afterEvaluate {
+                publishing {
+                    publications.withType<MavenPublication>().configureEach {
+                        artifactId = buildString {
+                            append(project.name)
+                            if (!name.contains("kotlinMultiplatform")) {
+                                append("-$name")
+                            }
+                        }.removeSuffix("Release")
+                    }
+                }
             }
         }
     }
