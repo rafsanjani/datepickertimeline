@@ -1,26 +1,27 @@
 
 
 
-# DatePickerTimeline ![Android CI](https://github.com/Rafsanjani/datepickertimeline/actions/workflows/android.yml/badge.svg?branch=main)
+# DatePickerTimeline ![Android CI](https://github.com/Rafsanjani/datepickertimeline/actions/workflows/android.yml/badge.svg?branch=main) ![Maven Central Version](https://img.shields.io/maven-central/v/io.github.rafsanjani/datepickertimeline)
 
 
-A linear Android date picker library written in Jetpack compose.<br> Inspired by https://pub.dev/packages/date_picker_timeline
+
+A linear date picker for compose multiplatform.<br> Inspired by https://pub.dev/packages/date_picker_timeline
 
 
 
 <img height="500" width="250" src="https://user-images.githubusercontent.com/9197459/146689659-647e230a-57ef-45e6-be76-c1cb2bb8b0c1.gif">  <img height="500" width="250" src="https://user-images.githubusercontent.com/9197459/146690796-5a979f20-a7be-4956-a991-36750cdcf0ab.gif">
 
 
-## Installation ![](https://jitpack.io/v/Rafsanjani/datepickertimeline.svg)
+## Installation 
 Add the dependency to your `build.gradle` or `build.gradle.kts` file
 
 ```groovy
 repositories {
-    maven { url 'https://jitpack.io' }
+    mavenCentral()
 }
 
 dependencies{
-    implementation ("com.github.Rafsanjani:datepickertimeline:<latest_version>")
+    implementation ("io.github.rafsanjani:datepickertimeline:<latest_version>")
 }
 ```
 ## Usage 
