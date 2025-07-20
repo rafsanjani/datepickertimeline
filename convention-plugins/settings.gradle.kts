@@ -15,7 +15,7 @@ dependencyResolutionManagement {
 
     versionCatalogs {
         create("libs") {
-            from("io.github.rafsanjani:versions:2025.07.19")
+            from("io.github.rafsanjani:versions:2025.07.20")
         }
     }
 }
