@@ -11,7 +11,7 @@ jobs:
       GPG_KEY: ${{ secrets.GPG_KEY }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup JDK
         uses: actions/setup-java@v5
